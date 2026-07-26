@@ -1,0 +1,32 @@
+{
+  "summary": {
+    "raw_files": 8,
+    "transaction_rows": 269720,
+    "return_rows": 7087,
+    "customers": 10281,
+    "products": 1560,
+    "stores": 24,
+    "calendar_start": "1997-01-01",
+    "calendar_end": "1998-12-31",
+    "high_findings": 3,
+    "medium_findings": 5,
+    "low_findings": 5,
+    "integrity_checks_failed": 0
+  },
+  "integrity": {
+    "transaction_product_orphans": 0,
+    "transaction_customer_orphans": 0,
+    "transaction_store_orphans": 0,
+    "return_product_orphans": 0,
+    "return_store_orphans": 0,
+    "store_region_orphans": 0,
+    "transaction_quantity_nonpositive": 0,
+    "return_quantity_nonpositive": 0,
+    "stock_date_after_transaction_date": 0,
+    "transaction_before_store_open": 0,
+    "transaction_before_account_open": 0,
+    "product_price_not_above_cost": 0,
+    "grocery_sqft_above_total_sqft": 0,
+    "children_at_home_above_total_children": 0
+  }
+}

@@ -1,0 +1,9 @@
+table,rows,columns,missing_cells,missing_cell_rate_pct,exact_duplicate_rows,exact_duplicate_rate_pct
+calendar,730,1,0,0.0,0,0.0
+customers,10281,20,1,0.0005,0,0.0
+products,1560,9,1695,12.0726,0,0.0
+regions,109,3,0,0.0,0,0.0
+returns,7087,4,0,0.0,5,0.0706
+stores,24,13,0,0.0,0,0.0
+transactions_1997,86837,6,0,0.0,1,0.0012
+transactions_1998,182883,6,0,0.0,8,0.0044

@@ -1,0 +1,94 @@
+# Data Dictionary
+
+Recommended types describe the processed analytical model, not the raw CSV schema.
+
+## Calendar
+
+| table    | column   | business_description                       | raw_pandas_type   | recommended_type   | analytical_role   | cleaning_requirement                   |
+|:---------|:---------|:-------------------------------------------|:------------------|:-------------------|:------------------|:---------------------------------------|
+| calendar | date     | Calendar date covering the analysis period | object            | date               | Date key          | Convert to datetime; verify uniqueness |
+
+## Customers
+
+| table     | column                  | business_description                     | raw_pandas_type   | recommended_type   | analytical_role              | cleaning_requirement                            |
+|:----------|:------------------------|:-----------------------------------------|:------------------|:-------------------|:-----------------------------|:------------------------------------------------|
+| customers | customer_id             | Customer identifier used in transactions | int64             | integer            | Primary key                  | Keep; validate uniqueness                       |
+| customers | customer_acct_num       | Customer account number                  | int64             | string             | Business identifier          | Convert to string to avoid numeric treatment    |
+| customers | first_name              | Customer first name                      | object            | string             | Customer attribute           | Trim whitespace                                 |
+| customers | last_name               | Customer last name                       | object            | string             | Customer attribute           | One missing value; use Unknown for display only |
+| customers | customer_address        | Street address                           | object            | string             | Customer attribute           | Trim whitespace                                 |
+| customers | customer_city           | Customer city                            | object            | string             | Geographic attribute         | Standardize text                                |
+| customers | customer_state_province | Customer state or province               | object            | string             | Geographic attribute         | Standardize text                                |
+| customers | customer_postal_code    | Customer postal code                     | int64             | string             | Geographic identifier        | Convert to string; left-pad four-digit values   |
+| customers | customer_country        | Customer country                         | object            | category           | Geographic attribute         | Validate accepted values                        |
+| customers | birthdate               | Customer date of birth                   | object            | date               | Demographic attribute        | Convert to datetime                             |
+| customers | marital_status          | Marital status code                      | object            | category           | Demographic attribute        | Map M/S labels if needed                        |
+| customers | yearly_income           | Income band                              | object            | ordered category   | Customer segment             | Create ordered band for sorting                 |
+| customers | gender                  | Gender code                              | object            | category           | Demographic attribute        | Validate accepted values                        |
+| customers | total_children          | Total number of children                 | int64             | integer            | Demographic measure          | Validate non-negative values                    |
+| customers | num_children_at_home    | Children currently living at home        | int64             | integer            | Demographic measure          | Check value does not exceed total_children      |
+| customers | education               | Highest education category               | object            | category           | Customer segment             | Standardize category labels                     |
+| customers | acct_open_date          | Date the customer account was opened     | object            | date               | Customer lifecycle attribute | Convert to datetime; check before transactions  |
+| customers | member_card             | Loyalty membership tier                  | object            | ordered category   | Customer segment             | Set Normal, Bronze, Silver, Golden order        |
+| customers | occupation              | Occupation group                         | object            | category           | Customer segment             | Standardize category labels                     |
+| customers | homeowner               | Home ownership flag                      | object            | boolean            | Demographic attribute        | Map Y/N to boolean                              |
+
+## Products
+
+| table    | column               | business_description             | raw_pandas_type   | recommended_type   | analytical_role     | cleaning_requirement                     |
+|:---------|:---------------------|:---------------------------------|:------------------|:-------------------|:--------------------|:-----------------------------------------|
+| products | product_id           | Product identifier used in facts | int64             | integer            | Primary key         | Keep; validate uniqueness                |
+| products | product_brand        | Product brand                    | object            | category           | Product attribute   | Trim and standardize text                |
+| products | product_name         | Product display name             | object            | string             | Product attribute   | Trim whitespace                          |
+| products | product_sku          | Stock keeping unit               | int64             | string             | Business identifier | Convert to string                        |
+| products | product_retail_price | Unit retail price                | float64           | decimal            | Monetary measure    | Validate positive values                 |
+| products | product_cost         | Unit product cost                | float64           | decimal            | Monetary measure    | Validate positive and below retail price |
+| products | product_weight       | Product weight                   | float64           | decimal            | Product measure     | Validate positive values                 |
+| products | recyclable           | Recyclable packaging flag        | float64           | boolean            | Product attribute   | Map blank to False and 1 to True         |
+| products | low_fat              | Low-fat product flag             | float64           | boolean            | Product attribute   | Map blank to False and 1 to True         |
+
+## Regions
+
+| table   | column         | business_description      | raw_pandas_type   | recommended_type   | analytical_role      | cleaning_requirement      |
+|:--------|:---------------|:--------------------------|:------------------|:-------------------|:---------------------|:--------------------------|
+| regions | region_id      | Sales region identifier   | int64             | integer            | Primary key          | Keep; validate uniqueness |
+| regions | sales_district | Sales district name       | object            | category           | Geographic attribute | Standardize text          |
+| regions | sales_region   | Higher-level sales region | object            | category           | Geographic attribute | Standardize text          |
+
+## Returns
+
+| table   | column      | business_description                 | raw_pandas_type   | recommended_type   | analytical_role   | cleaning_requirement      |
+|:--------|:------------|:-------------------------------------|:------------------|:-------------------|:------------------|:--------------------------|
+| returns | return_date | Date a product quantity was returned | object            | date               | Fact date         | Convert to datetime       |
+| returns | product_id  | Returned product identifier          | int64             | integer            | Foreign key       | Validate against products |
+| returns | store_id    | Store receiving the return           | int64             | integer            | Foreign key       | Validate against stores   |
+| returns | quantity    | Returned quantity                    | int64             | integer            | Fact measure      | Validate positive values  |
+
+## Stores
+
+| table   | column               | business_description               | raw_pandas_type   | recommended_type   | analytical_role           | cleaning_requirement                     |
+|:--------|:---------------------|:-----------------------------------|:------------------|:-------------------|:--------------------------|:-----------------------------------------|
+| stores  | store_id             | Store identifier used in facts     | int64             | integer            | Primary key               | Keep; validate uniqueness                |
+| stores  | region_id            | Sales region assigned to the store | int64             | integer            | Foreign key               | Validate against regions                 |
+| stores  | store_type           | Store format                       | object            | category           | Store attribute           | Validate accepted values                 |
+| stores  | store_name           | Store display name                 | object            | string             | Store attribute           | Trim whitespace                          |
+| stores  | store_street_address | Store street address               | object            | string             | Store attribute           | Trim whitespace                          |
+| stores  | store_city           | Store city                         | object            | string             | Geographic attribute      | Standardize text                         |
+| stores  | store_state          | Store state or province            | object            | string             | Geographic attribute      | Standardize text                         |
+| stores  | store_country        | Store country                      | object            | category           | Geographic attribute      | Validate accepted values                 |
+| stores  | store_phone          | Store phone number                 | object            | string             | Store attribute           | Keep as text                             |
+| stores  | first_opened_date    | Original store opening date        | object            | date               | Store lifecycle attribute | Convert to datetime                      |
+| stores  | last_remodel_date    | Most recent remodel date           | object            | date               | Store lifecycle attribute | Convert to datetime; check after opening |
+| stores  | total_sqft           | Total store area in square feet    | int64             | integer            | Store capacity measure    | Validate positive values                 |
+| stores  | grocery_sqft         | Grocery area in square feet        | int64             | integer            | Store capacity measure    | Check not greater than total_sqft        |
+
+## Transactions
+
+| table        | column           | business_description              | raw_pandas_type   | recommended_type   | analytical_role   | cleaning_requirement                                   |
+|:-------------|:-----------------|:----------------------------------|:------------------|:-------------------|:------------------|:-------------------------------------------------------|
+| transactions | transaction_date | Date of the sales transaction row | object            | date               | Fact date         | Convert to datetime                                    |
+| transactions | stock_date       | Date the sold stock was recorded  | object            | date               | Operational date  | Convert to datetime; verify not after transaction date |
+| transactions | product_id       | Sold product identifier           | int64             | integer            | Foreign key       | Validate against products                              |
+| transactions | customer_id      | Customer identifier               | int64             | integer            | Foreign key       | Validate against customers                             |
+| transactions | store_id         | Store identifier                  | int64             | integer            | Foreign key       | Validate against stores                                |
+| transactions | quantity         | Units sold on the transaction row | int64             | integer            | Fact measure      | Validate positive values                               |
