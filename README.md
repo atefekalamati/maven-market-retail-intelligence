@@ -8,7 +8,7 @@ An end-to-end retail analytics portfolio project covering sales, gross product p
 - [x] Business questions
 - [x] Data audit
 - [x] Data cleaning
-- [ ] Data modeling
+- [x] Data modeling
 - [ ] Exploratory data analysis
 - [ ] KPI design
 - [ ] Power BI dashboard
@@ -31,9 +31,12 @@ Maven Market stores its sales, customer, product, store, region, and return data
 - [Business questions](docs/02_business_questions.md)
 - [Data audit](docs/03_data_audit.md)
 - [Data cleaning](docs/04_data_cleaning.md)
+- [Data modeling](docs/05_data_modeling.md)
 - [Data quality report](reports/data_quality_report.md)
-- [Data dictionary](reports/data_dictionary.md)
 - [Data cleaning report](reports/data_cleaning_report.md)
+- [Data modeling report](reports/data_modeling_report.md)
+- [Processed-data dictionary](reports/data_dictionary.md)
+- [Model dictionary](reports/data_model_dictionary.md)
 
 ## Data audit summary
 
@@ -50,28 +53,61 @@ The cleaning pipeline preserves all source rows and writes seven standardized fi
 Key decisions:
 
 - merge the two transaction files while keeping source lineage;
-- add surrogate line IDs to transactions and returns;
+- add line IDs to transactions and returns;
 - flag duplicate candidates rather than removing uncertain records;
 - parse dates and standardize their export format;
 - keep account numbers, postal codes, SKUs, phone numbers, and line IDs as identifiers;
 - convert blank/1 product flags to booleans;
 - preserve the one missing surname through a separate missing-value flag.
 
-The pipeline produced zero missing cells in the processed tables and passed the integrity checks.
-
-Run it from the repository root:
+Run the cleaning stage from the repository root:
 
 ```powershell
 python scripts/data_cleaning.py
 ```
 
-The same workflow is documented in [`notebooks/04_data_cleaning.ipynb`](notebooks/04_data_cleaning.ipynb).
+## Data model
+
+The Power BI import layer uses a star schema with two facts and four dimensions:
+
+```text
+DimDate       ─┬─> FactSales
+               └─> FactReturns
+DimCustomer   ───> FactSales
+DimProduct    ─┬─> FactSales
+               └─> FactReturns
+DimStore      ─┬─> FactSales
+               └─> FactReturns
+```
+
+`DimStore` includes the Region attributes to avoid an unnecessary snowflake. Sales and returns remain separate facts because return records cannot be linked to a customer or original transaction.
+
+The model build produced:
+
+| Table | Rows |
+|---|---:|
+| `dim_date` | 737 |
+| `dim_customer` | 10,281 |
+| `dim_product` | 1,560 |
+| `dim_store` | 24 |
+| `fact_sales` | 269,720 |
+| `fact_returns` | 7,087 |
+
+The model reconciles to **$1,764,546.44 revenue**, **$711,727.66 product cost**, and **$1,052,818.78 gross product profit**. All model validation checks passed.
+
+Build the model after cleaning:
+
+```powershell
+python scripts/build_star_schema.py
+```
+
+The same workflow is documented in [`notebooks/05_data_modeling.ipynb`](notebooks/05_data_modeling.ipynb).
 
 ## Data
 
 Raw Kaggle files are stored locally in `data/raw/` and are not committed. Their expected filenames are listed in [`data/raw/README.md`](data/raw/README.md).
 
-Processed CSV files are also generated locally rather than committed. See [`data/processed/README.md`](data/processed/README.md) for output names and Power BI import types.
+Cleaned CSV files are generated in `data/processed/`. The Power BI-ready star-schema tables are generated in `data/model/`. Both folders keep only their README files in GitHub because the datasets can be rebuilt from the scripts.
 
 ## Current metric definitions
 
@@ -89,34 +125,36 @@ maven-market-retail-intelligence/
 ├── data/
 │   ├── raw/
 │   │   └── README.md
-│   └── processed/
+│   ├── processed/
+│   │   └── README.md
+│   └── model/
 │       └── README.md
 ├── dashboard/
 ├── docs/
 │   ├── 01_project_definition.md
 │   ├── 02_business_questions.md
 │   ├── 03_data_audit.md
-│   └── 04_data_cleaning.md
+│   ├── 04_data_cleaning.md
+│   └── 05_data_modeling.md
 ├── images/
 ├── notebooks/
 │   ├── 03_data_audit.ipynb
-│   └── 04_data_cleaning.ipynb
+│   ├── 04_data_cleaning.ipynb
+│   └── 05_data_modeling.ipynb
 ├── reports/
-│   ├── audit_summary.json
-│   ├── cleaning_validation.json
-│   ├── column_profile.csv
-│   ├── data_cleaning_log.csv
-│   ├── data_cleaning_report.md
-│   ├── data_cleaning_summary.csv
-│   ├── data_dictionary.csv
-│   ├── data_dictionary.md
-│   ├── data_quality_report.csv
 │   ├── data_quality_report.md
-│   ├── processed_schema.json
-│   └── table_profile.csv
+│   ├── data_cleaning_report.md
+│   ├── data_modeling_report.md
+│   ├── data_model_dictionary.md
+│   ├── model_relationships.csv
+│   ├── model_table_profile.csv
+│   └── model_validation.json
 ├── scripts/
 │   ├── data_audit.py
-│   └── data_cleaning.py
+│   ├── data_cleaning.py
+│   └── build_star_schema.py
+├── sql/
+│   └── 01_create_star_schema.sql
 ├── requirements.txt
 ├── .gitignore
 └── README.md

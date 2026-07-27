@@ -1,0 +1,9 @@
+from_table,from_column,to_table,to_column,cardinality,active_in_power_bi,filter_direction
+dim_date,date_key,fact_sales,transaction_date_key,1:*,True,Single
+dim_date,date_key,fact_sales,stock_date_key,1:*,False,Single
+dim_date,date_key,fact_returns,return_date_key,1:*,True,Single
+dim_product,product_key,fact_sales,product_key,1:*,True,Single
+dim_product,product_key,fact_returns,product_key,1:*,True,Single
+dim_customer,customer_key,fact_sales,customer_key,1:*,True,Single
+dim_store,store_key,fact_sales,store_key,1:*,True,Single
+dim_store,store_key,fact_returns,store_key,1:*,True,Single

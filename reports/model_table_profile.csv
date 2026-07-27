@@ -1,0 +1,7 @@
+table,grain,primary_key,rows,columns
+dim_date,One row per calendar date,date_key,737,15
+dim_customer,One row per customer,customer_key,10281,24
+dim_product,One row per product,product_key,1560,13
+dim_store,"One row per store, including region attributes",store_key,24,17
+fact_sales,One cleaned source transaction line,sales_line_key,269720,16
+fact_returns,One cleaned source return line,return_line_key,7087,8

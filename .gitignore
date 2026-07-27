@@ -19,6 +19,11 @@ data/raw/*
 data/processed/*
 !data/processed/README.md
 
+
+# Model-ready data is generated from processed files
+data/model/*
+!data/model/README.md
+
 # Power BI temporary files
 *.pbit.tmp
 

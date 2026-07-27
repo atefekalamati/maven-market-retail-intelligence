@@ -1,0 +1,41 @@
+{
+  "status": "passed",
+  "failed_checks": [],
+  "checks": {
+    "dim_date_key_unique": true,
+    "dim_customer_key_unique": true,
+    "dim_product_key_unique": true,
+    "dim_store_key_unique": true,
+    "fact_sales_key_unique": true,
+    "fact_returns_key_unique": true,
+    "sales_row_count_preserved": true,
+    "return_row_count_preserved": true,
+    "sales_foreign_keys_complete": true,
+    "return_foreign_keys_complete": true,
+    "sales_dates_covered": true,
+    "stock_dates_covered": true,
+    "return_dates_covered": true,
+    "sales_quantity_reconciled": true,
+    "return_quantity_reconciled": true,
+    "sales_amounts_non_negative": true,
+    "store_region_attributes_complete": true,
+    "same_store_count_is_13": true
+  },
+  "table_rows": {
+    "dim_date": 737,
+    "dim_customer": 10281,
+    "dim_product": 1560,
+    "dim_store": 24,
+    "fact_sales": 269720,
+    "fact_returns": 7087
+  },
+  "reconciliation": {
+    "quantity_sold": 833489,
+    "return_quantity": 8289,
+    "revenue": 1764546.44,
+    "product_cost_amount": 711727.66,
+    "gross_product_profit": 1052818.78,
+    "gross_profit_margin_pct": 59.67,
+    "same_store_comparable_stores": 13
+  }
+}

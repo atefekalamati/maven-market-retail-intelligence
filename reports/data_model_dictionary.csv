@@ -1,0 +1,94 @@
+table,column,description,power_bi_type,role
+dim_date,date_key,Integer date key in YYYYMMDD format,Whole number,Primary key
+dim_date,date,Calendar date,Date,Attribute
+dim_date,year,Calendar year,Whole number,Attribute
+dim_date,quarter_number,Quarter number from 1 to 4,Whole number,Sort/attribute
+dim_date,quarter,Quarter label such as Q1,Text,Attribute
+dim_date,month_number,Month number from 1 to 12,Whole number,Sort column
+dim_date,month_name,Full month name,Text,Attribute
+dim_date,month_short_name,Three-letter month name,Text,Attribute
+dim_date,year_month,Year and month label in YYYY-MM format,Text,Attribute
+dim_date,year_month_sort,Numeric YYYYMM value used to sort year-month labels,Whole number,Sort column
+dim_date,iso_week_number,ISO week number,Whole number,Attribute
+dim_date,day_of_month,Day number within the month,Whole number,Attribute
+dim_date,day_name,Day-of-week name,Text,Attribute
+dim_date,day_of_week_number,Monday-based day number from 1 to 7,Whole number,Sort column
+dim_date,is_weekend,True for Saturday and Sunday,True/False,Attribute
+dim_customer,customer_key,Surrogate customer key used by the fact table,Whole number,Primary key
+dim_customer,customer_id,Source customer identifier,Whole number,Business key
+dim_customer,customer_acct_num,Customer account number retained as an identifier,Text,Identifier
+dim_customer,customer_full_name,Combined first and last name for display,Text,Attribute
+dim_customer,first_name,Customer first name,Text,Attribute
+dim_customer,last_name,Customer last name; Unknown is used for one missing source value,Text,Attribute
+dim_customer,last_name_missing,Flags the source row with a missing surname,True/False,Quality flag
+dim_customer,customer_city,Customer city,Text,Geography attribute
+dim_customer,customer_state_province,Customer state or province,Text,Geography attribute
+dim_customer,customer_postal_code,Postal code kept as text,Text,Geography attribute
+dim_customer,customer_country,Customer country,Text,Geography attribute
+dim_customer,birthdate,Customer date of birth,Date,Attribute
+dim_customer,birth_year,Year extracted from birthdate,Whole number,Attribute
+dim_customer,marital_status,Decoded marital status,Text,Attribute
+dim_customer,yearly_income,Source income band,Text,Segmentation attribute
+dim_customer,gender,Decoded gender value,Text,Attribute
+dim_customer,total_children,Total number of children,Whole number,Attribute
+dim_customer,num_children_at_home,Number of children living at home,Whole number,Attribute
+dim_customer,education,Education category,Text,Segmentation attribute
+dim_customer,acct_open_date,Date the customer account was opened,Date,Attribute
+dim_customer,account_open_year,Year extracted from account open date,Whole number,Attribute
+dim_customer,member_card,Membership tier,Text,Segmentation attribute
+dim_customer,occupation,Occupation category,Text,Segmentation attribute
+dim_customer,is_homeowner,Home ownership flag,True/False,Attribute
+dim_product,product_key,Surrogate product key used by both fact tables,Whole number,Primary key
+dim_product,product_id,Source product identifier,Whole number,Business key
+dim_product,product_brand,Product brand,Text,Attribute
+dim_product,product_name,Product name,Text,Attribute
+dim_product,product_sku,Product SKU kept as text,Text,Identifier
+dim_product,product_retail_price,Current retail price in the source product table,Fixed decimal number,Attribute
+dim_product,product_cost,Current unit product cost in the source product table,Fixed decimal number,Attribute
+dim_product,unit_gross_profit,Retail price minus product cost,Fixed decimal number,Derived attribute
+dim_product,unit_margin_pct,Unit gross profit divided by retail price,Decimal number,Derived attribute
+dim_product,unit_markup_pct,Unit gross profit divided by product cost,Decimal number,Derived attribute
+dim_product,product_weight,Product weight from the source table,Decimal number,Attribute
+dim_product,is_recyclable,Recyclable product flag,True/False,Attribute
+dim_product,is_low_fat,Low-fat product flag,True/False,Attribute
+dim_store,store_key,Surrogate store key used by both fact tables,Whole number,Primary key
+dim_store,store_id,Source store identifier,Whole number,Business key
+dim_store,store_name,Store display name,Text,Attribute
+dim_store,store_type,Store format,Text,Segmentation attribute
+dim_store,store_city,Store city,Text,Geography attribute
+dim_store,store_state,Store state or province,Text,Geography attribute
+dim_store,store_country,Store country,Text,Geography attribute
+dim_store,first_opened_date,Store opening date,Date,Attribute
+dim_store,last_remodel_date,Most recent remodel date in the source,Date,Attribute
+dim_store,total_sqft,Total store area in square feet,Whole number,Attribute
+dim_store,grocery_sqft,Grocery area in square feet,Whole number,Attribute
+dim_store,non_grocery_sqft,Total area minus grocery area,Whole number,Derived attribute
+dim_store,grocery_share_pct,Grocery area as a percentage of total area,Decimal number,Derived attribute
+dim_store,region_id,Source region identifier retained for traceability,Whole number,Identifier
+dim_store,sales_district,Sales district from the region lookup,Text,Geography attribute
+dim_store,sales_region,Sales region from the region lookup,Text,Geography attribute
+dim_store,is_same_store_comparable,True for stores with sales in both 1997 and 1998,True/False,Analysis flag
+fact_sales,sales_line_key,Surrogate key for the modeled sales line,Whole number,Primary key
+fact_sales,transaction_line_id,Line identifier created during cleaning,Text,Degenerate identifier
+fact_sales,transaction_date_key,Date key for the sales transaction date,Whole number,Foreign key
+fact_sales,stock_date_key,Date key for stock date; use an inactive Power BI relationship,Whole number,Foreign key
+fact_sales,product_key,Surrogate product key,Whole number,Foreign key
+fact_sales,customer_key,Surrogate customer key,Whole number,Foreign key
+fact_sales,store_key,Surrogate store key,Whole number,Foreign key
+fact_sales,quantity_sold,Units sold on the source transaction line,Whole number,Additive measure
+fact_sales,unit_retail_price,Retail price copied to the fact at model build time,Fixed decimal number,Line attribute
+fact_sales,unit_product_cost,Unit product cost copied to the fact at model build time,Fixed decimal number,Line attribute
+fact_sales,revenue,Quantity sold multiplied by unit retail price,Fixed decimal number,Additive measure
+fact_sales,product_cost_amount,Quantity sold multiplied by unit product cost,Fixed decimal number,Additive measure
+fact_sales,gross_product_profit,Revenue minus product cost amount,Fixed decimal number,Additive measure
+fact_sales,source_year,Original transaction file year,Whole number,Lineage attribute
+fact_sales,source_row_number,Original row number within the yearly source file,Whole number,Lineage attribute
+fact_sales,duplicate_candidate,Flags exact-looking source rows retained for review,True/False,Quality flag
+fact_returns,return_line_key,Surrogate key for the modeled return line,Whole number,Primary key
+fact_returns,return_line_id,Line identifier created during cleaning,Text,Degenerate identifier
+fact_returns,return_date_key,Date key for the return date,Whole number,Foreign key
+fact_returns,product_key,Surrogate product key,Whole number,Foreign key
+fact_returns,store_key,Surrogate store key,Whole number,Foreign key
+fact_returns,return_quantity,Units returned on the source return line,Whole number,Additive measure
+fact_returns,source_row_number,Original row number in the return file,Whole number,Lineage attribute
+fact_returns,duplicate_candidate,Flags exact-looking source rows retained for review,True/False,Quality flag
