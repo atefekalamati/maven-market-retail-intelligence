@@ -1,0 +1,17 @@
+{
+  "status": "passed",
+  "checks": {
+    "overall_revenue_matches_model": true,
+    "overall_profit_matches_model": true,
+    "overall_quantity_matches_model": true,
+    "reported_growth_exceeds_same_store_growth": true,
+    "return_rate_is_between_zero_and_one": true,
+    "gross_margin_is_between_zero_and_one": true,
+    "no_metric_definition_duplicates": true
+  },
+  "notes": [
+    "No target values were created because the dataset contains no budget, plan or management threshold.",
+    "Order count and average order value are excluded because the source has no order identifier.",
+    "Return Quantity Rate must not be analysed by customer because FactReturns has no customer key."
+  ]
+}

@@ -1,0 +1,204 @@
+// Stage 7 — Maven Market KPI Measures
+// Mark DimDate[date] as the model's date column before using time intelligence.
+// Use single-direction relationships from dimensions to facts.
+
+// -----------------------------
+// Base measures
+// -----------------------------
+Total Revenue =
+SUM(FactSales[revenue])
+
+Total Product Cost =
+SUM(FactSales[product_cost_amount])
+
+Gross Product Profit =
+SUM(FactSales[gross_product_profit])
+
+Gross Margin % =
+DIVIDE([Gross Product Profit], [Total Revenue])
+
+Quantity Sold =
+SUM(FactSales[quantity_sold])
+
+Sales Lines =
+COUNTROWS(FactSales)
+
+Active Customers =
+DISTINCTCOUNT(FactSales[customer_key])
+
+Active Stores =
+DISTINCTCOUNT(FactSales[store_key])
+
+Active Products =
+DISTINCTCOUNT(FactSales[product_key])
+
+Returned Quantity =
+SUM(FactReturns[return_quantity])
+
+Return Quantity Rate % =
+DIVIDE([Returned Quantity], [Quantity Sold])
+
+// -----------------------------
+// Time comparison measures
+// -----------------------------
+Revenue Previous Year =
+CALCULATE(
+    [Total Revenue],
+    DATEADD(DimDate[date], -1, YEAR)
+)
+
+Revenue Growth % =
+DIVIDE(
+    [Total Revenue] - [Revenue Previous Year],
+    [Revenue Previous Year]
+)
+
+Profit Previous Year =
+CALCULATE(
+    [Gross Product Profit],
+    DATEADD(DimDate[date], -1, YEAR)
+)
+
+Profit Growth % =
+DIVIDE(
+    [Gross Product Profit] - [Profit Previous Year],
+    [Profit Previous Year]
+)
+
+Same-Store Revenue =
+CALCULATE(
+    [Total Revenue],
+    KEEPFILTERS(DimStore[is_same_store_comparable] = TRUE())
+)
+
+Same-Store Revenue Previous Year =
+CALCULATE(
+    [Same-Store Revenue],
+    DATEADD(DimDate[date], -1, YEAR)
+)
+
+Same-Store Revenue Growth % =
+DIVIDE(
+    [Same-Store Revenue] - [Same-Store Revenue Previous Year],
+    [Same-Store Revenue Previous Year]
+)
+
+Same-Store Profit =
+CALCULATE(
+    [Gross Product Profit],
+    KEEPFILTERS(DimStore[is_same_store_comparable] = TRUE())
+)
+
+Same-Store Profit Previous Year =
+CALCULATE(
+    [Same-Store Profit],
+    DATEADD(DimDate[date], -1, YEAR)
+)
+
+Same-Store Profit Growth % =
+DIVIDE(
+    [Same-Store Profit] - [Same-Store Profit Previous Year],
+    [Same-Store Profit Previous Year]
+)
+
+// -----------------------------
+// Customer measures
+// -----------------------------
+Revenue per Active Customer =
+DIVIDE([Total Revenue], [Active Customers])
+
+Profit per Active Customer =
+DIVIDE([Gross Product Profit], [Active Customers])
+
+Repeat Customers =
+COUNTROWS(
+    FILTER(
+        VALUES(FactSales[customer_key]),
+        CALCULATE(DISTINCTCOUNT(FactSales[transaction_date_key])) > 1
+    )
+)
+
+Repeat Customer Rate % =
+DIVIDE([Repeat Customers], [Active Customers])
+
+Top 10% Customer Revenue =
+VAR CustomerCount = [Active Customers]
+VAR TopCustomerCount = MAX(1, ROUNDUP(CustomerCount * 0.10, 0))
+VAR CustomerRevenueTable =
+    ADDCOLUMNS(
+        ALLSELECTED(DimCustomer[customer_key]),
+        "@Revenue", CALCULATE([Total Revenue])
+    )
+RETURN
+    SUMX(
+        TOPN(
+            TopCustomerCount,
+            CustomerRevenueTable,
+            [@Revenue], DESC,
+            DimCustomer[customer_key], ASC
+        ),
+        [@Revenue]
+    )
+
+Top 10% Customer Revenue Contribution % =
+DIVIDE(
+    [Top 10% Customer Revenue],
+    CALCULATE(
+        [Total Revenue],
+        ALLSELECTED(DimCustomer[customer_key])
+    )
+)
+
+// -----------------------------
+// Store efficiency measures
+// -----------------------------
+Revenue per Active Store =
+DIVIDE([Total Revenue], [Active Stores])
+
+Profit per Active Store =
+DIVIDE([Gross Product Profit], [Active Stores])
+
+Active Store Area =
+SUMX(
+    FILTER(
+        VALUES(DimStore[store_key]),
+        CALCULATE([Sales Lines]) > 0
+    ),
+    CALCULATE(MAX(DimStore[total_sqft]))
+)
+
+Revenue per Square Foot =
+DIVIDE([Total Revenue], [Active Store Area])
+
+Gross Profit per Square Foot =
+DIVIDE([Gross Product Profit], [Active Store Area])
+
+// -----------------------------
+// Sales-line and product measures
+// -----------------------------
+Average Revenue per Sales Line =
+DIVIDE([Total Revenue], [Sales Lines])
+
+Average Units per Sales Line =
+DIVIDE([Quantity Sold], [Sales Lines])
+
+Top Product Revenue =
+MAXX(
+    ALLSELECTED(DimProduct[product_key]),
+    CALCULATE([Total Revenue])
+)
+
+Top Product Revenue Contribution % =
+DIVIDE(
+    [Top Product Revenue],
+    CALCULATE(
+        [Total Revenue],
+        ALLSELECTED(DimProduct[product_key])
+    )
+)
+
+// Important usage notes:
+// 1. Sales Lines is not Total Orders. The source has no order identifier.
+// 2. Average Revenue per Sales Line is not Average Order Value.
+// 3. Return Quantity Rate is valid by date, product and store, but not by customer.
+// 4. Gross Product Profit excludes operating expenses and must not be labelled Net Profit.
