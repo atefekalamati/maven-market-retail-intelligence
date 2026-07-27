@@ -1,0 +1,13 @@
+table,change,affected_rows,reason
+transactions,Appended 1997 and 1998 files,269720,Create one consistent sales table while preserving source-year lineage.
+transactions,Added surrogate line ID and source row fields,269720,The source has no transaction or order identifier.
+transactions,Flagged exact-looking duplicate candidates,18,Retain uncertain rows but make them visible for analysis and review.
+returns,Added surrogate line ID and source row number,7087,The source has no return-row identifier.
+returns,Flagged exact-looking duplicate candidates,10,"Identical returns may still be separate real events, so they were not removed."
+customers,Converted account and postal identifiers to text,10281,Identifiers should not be aggregated as numbers.
+customers,Restored five-character postal-code display,20,Four-digit source values had lost a leading zero.
+customers,Filled missing display surname and kept a missing-value flag,1,Avoid blank labels without hiding that the source value was missing.
+customers,Decoded compact demographic codes,10281,Readable labels are safer for reports and Power BI fields.
+products,Converted SKU to text,1560,"SKU is an identifier, not a numeric measure."
+products,Converted blank/1 product flags to booleans,1560,The source uses blank for False and 1 for True.
+multiple,Parsed and standardized date fields,287842,Date types are required for valid sorting and time intelligence.

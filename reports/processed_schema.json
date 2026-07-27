@@ -1,0 +1,80 @@
+{
+  "calendar": {
+    "date": "datetime64[ns]"
+  },
+  "customers": {
+    "customer_id": "int64",
+    "customer_acct_num": "string",
+    "first_name": "object",
+    "last_name": "object",
+    "customer_address": "object",
+    "customer_city": "object",
+    "customer_state_province": "object",
+    "customer_postal_code": "string",
+    "customer_country": "object",
+    "birthdate": "datetime64[ns]",
+    "marital_status": "object",
+    "yearly_income": "object",
+    "gender": "object",
+    "total_children": "int64",
+    "num_children_at_home": "int64",
+    "education": "object",
+    "acct_open_date": "datetime64[ns]",
+    "member_card": "object",
+    "occupation": "object",
+    "last_name_missing": "bool",
+    "is_homeowner": "bool"
+  },
+  "products": {
+    "product_id": "int64",
+    "product_brand": "object",
+    "product_name": "object",
+    "product_sku": "string",
+    "product_retail_price": "float64",
+    "product_cost": "float64",
+    "product_weight": "float64",
+    "is_recyclable": "bool",
+    "is_low_fat": "bool"
+  },
+  "regions": {
+    "region_id": "int64",
+    "sales_district": "object",
+    "sales_region": "object"
+  },
+  "returns": {
+    "return_line_id": "object",
+    "return_date": "datetime64[ns]",
+    "product_id": "int64",
+    "store_id": "int64",
+    "quantity": "int64",
+    "source_row_number": "int64",
+    "duplicate_candidate": "bool"
+  },
+  "stores": {
+    "store_id": "int64",
+    "region_id": "int64",
+    "store_type": "object",
+    "store_name": "object",
+    "store_street_address": "object",
+    "store_city": "object",
+    "store_state": "object",
+    "store_country": "object",
+    "store_phone": "string",
+    "first_opened_date": "datetime64[ns]",
+    "last_remodel_date": "datetime64[ns]",
+    "total_sqft": "int64",
+    "grocery_sqft": "int64"
+  },
+  "transactions": {
+    "transaction_line_id": "object",
+    "transaction_date": "datetime64[ns]",
+    "stock_date": "datetime64[ns]",
+    "product_id": "int64",
+    "customer_id": "int64",
+    "store_id": "int64",
+    "quantity": "int64",
+    "source_year": "int64",
+    "source_row_number": "int64",
+    "duplicate_candidate": "bool"
+  }
+}
