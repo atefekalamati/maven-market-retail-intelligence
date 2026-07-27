@@ -1,0 +1,27 @@
+{
+  "stage": 8,
+  "artifact_type": "Power BI design package",
+  "status": "design_complete_pbix_not_executed",
+  "files_created": {
+    "wireframes": 6,
+    "theme_files": 1,
+    "dax_files": 1,
+    "documentation_files": 3,
+    "visual_specification_files": 1
+  },
+  "baseline": {
+    "total_revenue": 1764546.44,
+    "gross_product_profit": 1052818.78,
+    "gross_margin_pct": 59.67,
+    "reported_revenue_growth_pct": 112.18,
+    "same_store_revenue_growth_pct": 8.4,
+    "active_customers": 8842,
+    "return_quantity_rate_pct": 0.99
+  },
+  "validation_notes": [
+    "All six wireframes were generated from the Stage 5 model tables.",
+    "Theme JSON is syntactically valid.",
+    "DAX measures require validation inside Power BI Desktop.",
+    "No PBIX file was generated in this environment."
+  ]
+}

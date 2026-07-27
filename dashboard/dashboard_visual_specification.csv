@@ -1,0 +1,27 @@
+page,visual_id,title,visual_type,position,measures,dimensions,management_use,interaction_notes
+Executive Overview,OV-01,Total Revenue,Card,Top row,Total Revenue,—,Understand business scale,Responds to all page slicers
+Executive Overview,OV-02,Gross Product Profit,Card,Top row,Gross Product Profit; Gross Margin %,—,Review product-level profitability,Responds to all page slicers
+Executive Overview,OV-03,Reported vs Same-Store Growth,Two cards,Top row,Revenue Growth %; Same-Store Revenue Growth %,—,Separate expansion from comparable growth,Responds to date and geography filters
+Executive Overview,OV-04,Monthly Revenue and Profit,Line chart,Middle left,Total Revenue; Gross Product Profit,DimDate[year_month],Track momentum and seasonality,Cross-filters country and brand visuals
+Executive Overview,OV-05,Revenue by Country,Horizontal bar,Middle right,Total Revenue,DimStore[store_country],Compare country contribution,Cross-highlights all page visuals
+Executive Overview,OV-06,Top Brands by Revenue,Horizontal bar,Bottom left,Total Revenue,DimProduct[product_brand],Identify major revenue sources,Top 8; drill-through to Product page
+Sales Performance,SA-01,Monthly Revenue by Year,Line chart,Middle left,Total Revenue,DimDate[month_short_name]; DimDate[year],Compare seasonal performance,Month sorted by month_number
+Sales Performance,SA-02,Revenue by Sales Region,Horizontal bar,Middle right,Total Revenue,DimStore[sales_region],Identify regional scale and gaps,Cross-filter store ranking
+Sales Performance,SA-03,Store Revenue Ranking,Horizontal bar,Bottom left,Total Revenue,DimStore[store_name],Prioritize stores for review,Top N selector; drill-through
+Sales Performance,SA-04,Growth Comparison,Clustered columns,Bottom right,Revenue Growth %; Same-Store Revenue Growth %,DimDate[year],Avoid overstating network growth,Show only years with prior-year baseline
+Product & Profitability,PR-01,Top Products by Revenue,Horizontal bar,Middle left,Total Revenue,DimProduct[product_name],Find leading products,Top 10; product tooltip
+Product & Profitability,PR-02,Revenue vs Margin,Scatter,Middle right,Total Revenue; Gross Margin %; Quantity Sold,DimProduct[product_brand],Find high-revenue low-margin brands,Label top 5 revenue brands
+Product & Profitability,PR-03,Top Brands by Profit,Horizontal bar,Bottom left,Gross Product Profit,DimProduct[product_brand],Prioritize profitable brands,Top 8
+Product & Profitability,PR-04,Product Return Risk,Horizontal bar,Bottom right,Return Quantity Rate %; Quantity Sold,DimProduct[product_name],Review products with elevated returns,Filter to products with at least 300 units sold
+Customer Analysis,CU-01,Revenue by Membership Tier,Column chart,Middle left,Total Revenue; Active Customers,DimCustomer[member_card],Evaluate loyalty tier contribution,Custom tier sort
+Customer Analysis,CU-02,Revenue per Customer,Column chart,Middle right,Revenue per Active Customer,DimCustomer[member_card],Compare customer value by tier,Tooltip includes customer count
+Customer Analysis,CU-03,Revenue by Income Band,Horizontal bar,Bottom left,Total Revenue,DimCustomer[yearly_income],Identify high-value income bands,Sort by revenue
+Customer Analysis,CU-04,Customer Concentration,Line / Pareto,Bottom right,Customer Revenue; cumulative revenue share,Customer revenue rank,Monitor revenue dependency,Static segmentation or calculated table
+Store & Geography,ST-01,Store Size vs Revenue,Scatter,Middle left,Total Revenue; Quantity Sold,DimStore[total_sqft]; DimStore[store_name],Test whether store size explains scale,Bubble size = quantity sold
+Store & Geography,ST-02,Revenue by Store Type,Horizontal bar,Middle right,Total Revenue,DimStore[store_type],Compare store formats,Cross-filter store ranking
+Store & Geography,ST-03,Top Stores by Revenue,Horizontal bar,Bottom left,Total Revenue,DimStore[store_name],Identify leading stores,Top 10; drill-through
+Store & Geography,ST-04,Revenue per Square Foot,Horizontal bar,Bottom right,Revenue per Square Foot,DimStore[store_name],Compare store productivity,Top 10 productivity
+Returns & Detail,RE-01,Monthly Returned Quantity,Line chart,Middle left,Returned Quantity,DimDate[year_month],Track return movement,Date relationship to FactReturns must be active
+Returns & Detail,RE-02,Store Return Rate,Horizontal bar,Middle right,Return Quantity Rate %,DimStore[store_name],Find stores needing investigation,Top 10 by rate
+Returns & Detail,RE-03,Product Return Risk,Horizontal bar,Bottom left,Return Quantity Rate %; Quantity Sold,DimProduct[product_name],Prioritize product review,Minimum-volume filter
+Returns & Detail,RE-04,Transaction Detail,Table,Bottom right,Quantity Sold; Total Revenue; Gross Product Profit; Returned Quantity,Date; Store; Product; Brand,Support drill-through investigation,Export enabled; row-level detail

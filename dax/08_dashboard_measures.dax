@@ -1,0 +1,150 @@
+// Stage 8 — Dashboard display and interaction measures
+// These measures extend the KPI measures created in Stage 7.
+// Mark DimDate[date] as the date table before using time-intelligence functions.
+
+Revenue YTD =
+TOTALYTD(
+    [Total Revenue],
+    DimDate[date]
+)
+
+Gross Profit YTD =
+TOTALYTD(
+    [Gross Product Profit],
+    DimDate[date]
+)
+
+Revenue Previous Month =
+CALCULATE(
+    [Total Revenue],
+    DATEADD(DimDate[date], -1, MONTH)
+)
+
+Revenue MoM Growth % =
+DIVIDE(
+    [Total Revenue] - [Revenue Previous Month],
+    [Revenue Previous Month]
+)
+
+Gross Profit Previous Month =
+CALCULATE(
+    [Gross Product Profit],
+    DATEADD(DimDate[date], -1, MONTH)
+)
+
+Gross Profit MoM Growth % =
+DIVIDE(
+    [Gross Product Profit] - [Gross Profit Previous Month],
+    [Gross Profit Previous Month]
+)
+
+Revenue Running Total =
+CALCULATE(
+    [Total Revenue],
+    FILTER(
+        ALLSELECTED(DimDate[date]),
+        DimDate[date] <= MAX(DimDate[date])
+    )
+)
+
+Store Revenue Rank =
+RANKX(
+    ALLSELECTED(DimStore[store_name]),
+    [Total Revenue],
+    ,
+    DESC,
+    DENSE
+)
+
+Product Revenue Rank =
+RANKX(
+    ALLSELECTED(DimProduct[product_name]),
+    [Total Revenue],
+    ,
+    DESC,
+    DENSE
+)
+
+Brand Profit Rank =
+RANKX(
+    ALLSELECTED(DimProduct[product_brand]),
+    [Gross Product Profit],
+    ,
+    DESC,
+    DENSE
+)
+
+Return Rate vs Overall (pp) =
+VAR OverallRate =
+    CALCULATE(
+        [Return Quantity Rate %],
+        REMOVEFILTERS(DimStore),
+        REMOVEFILTERS(DimProduct)
+    )
+RETURN
+    ([Return Quantity Rate %] - OverallRate) * 100
+
+Selected Date Range =
+VAR StartDate = MIN(DimDate[date])
+VAR EndDate = MAX(DimDate[date])
+RETURN
+    FORMAT(StartDate, "MMM d, yyyy")
+        & " – "
+        & FORMAT(EndDate, "MMM d, yyyy")
+
+Selected Geography =
+VAR CountryCount = COUNTROWS(VALUES(DimStore[store_country]))
+VAR RegionCount = COUNTROWS(VALUES(DimStore[sales_region]))
+RETURN
+    SWITCH(
+        TRUE(),
+        HASONEVALUE(DimStore[store_name]), SELECTEDVALUE(DimStore[store_name]),
+        HASONEVALUE(DimStore[sales_region]), SELECTEDVALUE(DimStore[sales_region]),
+        HASONEVALUE(DimStore[store_country]), SELECTEDVALUE(DimStore[store_country]),
+        CountryCount > 1 || RegionCount > 1, "All selected locations",
+        "All locations"
+    )
+
+Executive Page Subtitle =
+[Selected Date Range]
+    & "  |  "
+    & [Selected Geography]
+
+Visible Store Count =
+DISTINCTCOUNT(FactSales[store_key])
+
+Visible Product Count =
+DISTINCTCOUNT(FactSales[product_key])
+
+Visible Customer Count =
+DISTINCTCOUNT(FactSales[customer_key])
+
+Reported Growth Label =
+IF(
+    ISBLANK([Revenue Growth %]),
+    "No prior-year comparison",
+    FORMAT([Revenue Growth %], "+0.0%;-0.0%;0.0%")
+)
+
+Same-Store Growth Label =
+IF(
+    ISBLANK([Same-Store Revenue Growth %]),
+    "No comparable-store baseline",
+    FORMAT([Same-Store Revenue Growth %], "+0.0%;-0.0%;0.0%")
+)
+
+Return Review Flag =
+VAR DifferencePP = [Return Rate vs Overall (pp)]
+RETURN
+    SWITCH(
+        TRUE(),
+        ISBLANK([Return Quantity Rate %]), "No return data",
+        DifferencePP >= 0.50, "Review",
+        DifferencePP >= 0.15, "Watch",
+        "Within network range"
+    )
+
+// Usage notes:
+// 1. The return flag is relative to the current network average, not a business target.
+// 2. Store and product ranks respect the report's selected filters.
+// 3. Dynamic labels are display measures and should not be used as numerical KPIs.

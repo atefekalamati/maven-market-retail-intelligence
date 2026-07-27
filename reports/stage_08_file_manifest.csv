@@ -1,0 +1,14 @@
+path,size_bytes
+dashboard/dashboard_visual_specification.csv,4810
+dashboard/maven_market_power_bi_theme.json,419
+dashboard/power_bi_build_guide.md,2897
+dashboard/wireframes/01_executive_overview.png,190635
+dashboard/wireframes/02_sales_performance.png,175694
+dashboard/wireframes/03_product_profitability.png,222753
+dashboard/wireframes/04_customer_analysis.png,167966
+dashboard/wireframes/05_store_geography.png,165936
+dashboard/wireframes/06_returns_detail.png,178238
+dax/08_dashboard_measures.dax,3417
+docs/08_power_bi_dashboard.md,4394
+reports/dashboard_design_validation.json,804
+reports/dashboard_qa_checklist.md,1805
