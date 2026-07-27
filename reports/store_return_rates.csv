@@ -1,0 +1,25 @@
+store_key,quantity_sold,return_quantity,store_name,store_type,store_country,sales_region,return_rate_pct
+8,40994,480.0,Store 8,Deluxe Supermarket,Mexico,Mexico South,1.1709030589842417
+20,10600,121.0,Store 20,Mid-Size Grocery,Canada,Canada West,1.1415094339622642
+23,22377,250.0,Store 23,Mid-Size Grocery,USA,North West,1.1172185726415516
+12,41808,460.0,Store 12,Deluxe Supermarket,Mexico,Mexico Central,1.1002678913126676
+16,52489,559.0,Store 16,Supermarket,USA,North West,1.0649850444855111
+19,40152,420.0,Store 19,Deluxe Supermarket,Canada,Canada West,1.0460251046025104
+11,54526,564.0,Store 11,Supermarket,USA,North West,1.0343689249165535
+24,52417,541.0,Store 24,Supermarket,USA,South West,1.0321079039242993
+17,74347,764.0,Store 17,Deluxe Supermarket,USA,North West,1.0276137571119213
+18,11080,112.0,Store 18,Mid-Size Grocery,Mexico,Mexico Central,1.0108303249097472
+7,52475,528.0,Store 7,Supermarket,USA,South West,1.006193425440686
+1,26679,267.0,Store 1,Supermarket,Mexico,Mexico West,1.0007871359496232
+15,54865,547.0,Store 15,Supermarket,USA,North West,0.9969926182447827
+4,26024,255.0,Store 4,Gourmet Supermarket,Mexico,Mexico Central,0.9798647402397785
+6,46129,446.0,Store 6,Gourmet Supermarket,USA,South West,0.9668538229747013
+9,11910,115.0,Store 9,Mid-Size Grocery,Mexico,Mexico Central,0.9655751469353484
+21,38608,372.0,Store 21,Deluxe Supermarket,Mexico,Mexico Central,0.9635308744301698
+3,51914,496.0,Store 3,Supermarket,USA,North West,0.9554262819278037
+10,27334,256.0,Store 10,Supermarket,Mexico,Mexico Central,0.9365625228652961
+13,80762,736.0,Store 13,Deluxe Supermarket,USA,North West,0.9113196800475472
+5,2401,0.0,Store 5,Small Grocery,Mexico,Mexico West,0.0
+2,4518,0.0,Store 2,Small Grocery,USA,North West,0.0
+14,4436,0.0,Store 14,Small Grocery,USA,Central West,0.0
+22,4644,0.0,Store 22,Small Grocery,USA,North West,0.0

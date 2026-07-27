@@ -1,0 +1,23 @@
+{
+  "status": "passed",
+  "checks": {
+    "sales_rows_preserved": true,
+    "revenue_reconciles": true,
+    "profit_reconciles": true,
+    "quantity_reconciles": true,
+    "all_expected_charts_created": true,
+    "annual_periods_present": true,
+    "all_1998_stores_present": true
+  },
+  "generated_charts": [
+    "01_monthly_revenue_profit.png",
+    "02_reported_vs_same_store_growth.png",
+    "03_store_size_vs_revenue_1998.png",
+    "04_top_stores_revenue_1998.png",
+    "05_top_brands_revenue.png",
+    "06_customer_revenue_concentration.png",
+    "07_member_card_revenue_per_customer.png",
+    "08_store_return_rate.png",
+    "09_product_return_risk.png"
+  ]
+}
