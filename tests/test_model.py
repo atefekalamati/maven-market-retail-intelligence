@@ -32,7 +32,10 @@ def test_generator_output_is_committed_and_deterministic(tmp_path: Path) -> None
     """Regenerating the project reproduces the committed files byte for byte."""
     output = tmp_path / "dashboard"
     output.mkdir()
-    builder.build_project(ROOT, output, str(ROOT / "data" / "model"))
+    # Reuse the committed DataFolder default: it is a machine-specific path.
+    expressions = (MODEL_DIR / "definition" / "expressions.tmdl").read_text(encoding="utf-8")
+    data_folder = re.search(r'expression DataFolder = "(.*?)" meta', expressions).group(1).replace('""', '"')
+    builder.build_project(ROOT, output, data_folder)
 
     def project_files(base: Path) -> list[Path]:
         return sorted(

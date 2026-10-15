@@ -1985,7 +1985,9 @@ def load_facts(root: Path) -> dict[str, Any]:
 
 def write_json(path: Path, payload: dict) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(payload, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    path.write_text(
+        json.dumps(payload, indent=2, ensure_ascii=False) + "\n", encoding="utf-8", newline="\n"
+    )
 
 
 def write_text(path: Path, text: str) -> None:
@@ -2089,6 +2091,11 @@ def build_semantic_model(root: Path, model_dir: Path, data_folder: str) -> None:
     )
 
 
+def lf_bytes(path: Path) -> bytes:
+    """File content with LF line endings, so output does not depend on git checkout settings."""
+    return path.read_bytes().replace(b"\r\n", b"\n")
+
+
 def base_theme_path(report_dir: Path) -> Path:
     return report_dir / "StaticResources" / "SharedResources" / "BaseThemes" / f"{BASE_THEME}.json"
 
@@ -2097,7 +2104,7 @@ def read_base_theme(report_dir: Path) -> bytes:
     """Read the base theme from Power BI Desktop, or reuse the committed copy."""
     for source in [BASE_THEME_SOURCE / f"{BASE_THEME}.json", base_theme_path(report_dir)]:
         if source.exists():
-            return source.read_bytes()
+            return lf_bytes(source)
     raise FileNotFoundError(f"Base theme {BASE_THEME}.json not found in Power BI Desktop or {report_dir}")
 
 
@@ -2108,7 +2115,7 @@ def build_report(root: Path, report_dir: Path, base_theme_bytes: bytes) -> None:
     theme_name = theme_source.name
     registered = report_dir / "StaticResources" / "RegisteredResources" / theme_name
     registered.parent.mkdir(parents=True, exist_ok=True)
-    shutil.copyfile(theme_source, registered)
+    registered.write_bytes(lf_bytes(theme_source))
     base_theme = base_theme_path(report_dir)
     base_theme.parent.mkdir(parents=True, exist_ok=True)
     base_theme.write_bytes(base_theme_bytes)
