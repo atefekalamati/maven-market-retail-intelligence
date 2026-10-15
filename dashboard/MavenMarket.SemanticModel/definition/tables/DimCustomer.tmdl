@@ -269,3 +269,5 @@ table DimCustomer
 				in
 				    Added2
 
+	annotation PBI_ResultType = Table
+

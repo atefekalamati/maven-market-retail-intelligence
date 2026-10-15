@@ -99,3 +99,5 @@ table FactReturns
 				in
 				    ChangedTypes
 
+	annotation PBI_ResultType = Table
+

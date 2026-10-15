@@ -142,3 +142,5 @@ table DimProduct
 				in
 				    ChangedTypes
 
+	annotation PBI_ResultType = Table
+

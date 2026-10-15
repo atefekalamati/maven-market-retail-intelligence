@@ -181,3 +181,5 @@ table FactSales
 				in
 				    ChangedTypes
 
+	annotation PBI_ResultType = Table
+

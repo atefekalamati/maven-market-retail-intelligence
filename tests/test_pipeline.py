@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import re
 
 import pandas as pd
 import pytest
@@ -87,3 +88,37 @@ def test_measure_validation_covers_every_measure() -> None:
     assert set(results["measure"]) == set(MEASURE_METADATA)
     assert (results["status"] == "passed").all()
     assert (results["source"] == "kpi_baseline_snapshot").sum() > 0
+
+
+RUN_TIMESTAMP = re.compile(r"20\d\d-\d\d-\d\dT\d\d:\d\d:\d\d")
+
+
+def test_notebooks_have_no_run_metadata() -> None:
+    for path in sorted((ROOT / "notebooks").glob("*.ipynb")):
+        notebook = json.loads(path.read_text(encoding="utf-8"))
+        for cell in notebook["cells"]:
+            assert "execution" not in cell.get("metadata", {}), path.name
+        assert not RUN_TIMESTAMP.search(path.read_text(encoding="utf-8")), path.name
+
+
+def test_reports_have_no_run_timestamps() -> None:
+    for path in sorted((ROOT / "reports").glob("*")):
+        if path.suffix in {".json", ".csv", ".md"}:
+            assert not RUN_TIMESTAMP.search(path.read_text(encoding="utf-8")), path.name
+
+
+def test_dashboard_pdf_has_six_pages_and_no_creation_date() -> None:
+    pymupdf = pytest.importorskip("pymupdf")
+    document = pymupdf.open(ROOT / "dashboard" / "dashboard.pdf")
+    assert document.page_count == 6
+    assert document.metadata["creationDate"] == ""
+
+
+def test_readme_links_and_images_exist() -> None:
+    readme = (ROOT / "README.md").read_text(encoding="utf-8")
+    targets = re.findall(r"\]\(([^)#]+)\)", readme)
+    local = [t for t in targets if not t.startswith("http")]
+    assert "images/dashboard/01_executive_overview.png" in local
+    assert "dashboard/dashboard.pdf" in local
+    for target in local:
+        assert (ROOT / target).exists(), target

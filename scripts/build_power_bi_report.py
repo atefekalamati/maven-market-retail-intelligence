@@ -509,6 +509,10 @@ def write_table_tmdl(table: Table) -> str:
         "\t\tsource =",
         *indent_block(table_m_expression(table), 4),
         "",
+        # Without the result type, Power BI Desktop evaluates every query on
+        # open to find it, which runs all CSV loads in parallel.
+        "\tannotation PBI_ResultType = Table",
+        "",
     ]
     return "\n".join(lines) + "\n"
 
@@ -569,6 +573,8 @@ def write_measure_table_tmdl(measures: list[tuple[str, str]]) -> str:
         "\t\t\t\t    Source = #table(type table [Placeholder = Int64.Type], {})",
         "\t\t\t\tin",
         "\t\t\t\t    Source",
+        "",
+        "\tannotation PBI_ResultType = Table",
         "",
     ]
     return "\n".join(lines) + "\n"

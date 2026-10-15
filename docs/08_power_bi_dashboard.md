@@ -161,3 +161,9 @@ Measure results are in `reports/power_bi_measure_validation.csv`. Seventy-three 
 
 The vendored schemas in `tests/schemas/` can be refreshed with `python tests/fetch_pbir_schemas.py`.
 
+### Export
+
+`dashboard/dashboard.pdf` was exported from Power BI Desktop (**File → Export → Export to PDF**) after a full refresh. `python scripts/export_dashboard_images.py` removes the PDF's creation timestamp and renders the six pages to `images/dashboard/`.
+
+The model tables carry `annotation PBI_ResultType = Table`. Without it, Power BI Desktop evaluates every query in parallel when the file opens, which can exhaust memory on an 8–16 GB machine.
+

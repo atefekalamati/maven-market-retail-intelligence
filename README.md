@@ -1,6 +1,12 @@
 # Maven Market Retail Intelligence
 
-An end-to-end retail analytics portfolio project covering sales, gross product profit, customer value, store performance, product performance, and returns.
+**Reported revenue grew +112.2% in 1998, but only +8.4% in the 13 stores open in both years. More than 90% of the growth came from opening 11 new stores.**
+
+An end-to-end retail analytics project. It covers data audit, cleaning, a star-schema model, exploratory analysis, KPI design and a six-page Power BI report for Maven Market, a grocery chain with 24 stores in the USA, Mexico and Canada (1997–1998).
+
+[![Executive Overview](images/dashboard/01_executive_overview.png)](dashboard/dashboard.pdf)
+
+Other pages: [Sales Performance](images/dashboard/02_sales_performance.png) · [Product & Profitability](images/dashboard/03_product_profitability.png) · [Customer Analysis](images/dashboard/04_customer_analysis.png) · [Store & Geographic Performance](images/dashboard/05_store_geography.png) · [Returns & Detailed Analysis](images/dashboard/06_returns_detail.png) · **[Full report (PDF)](dashboard/dashboard.pdf)**
 
 ## Progress
 
@@ -12,80 +18,36 @@ An end-to-end retail analytics portfolio project covering sales, gross product p
 - [x] Exploratory data analysis
 - [x] KPI design
 - [x] Power BI dashboard
-- [ ] Final insights and recommendations
+- [x] Final insights and recommendations
 
-## Project question
+## Key findings
 
-Maven Market stores its sales, customer, product, store, region, and return data in separate CSV files. This project turns those files into a reproducible analytical model and answers practical questions such as:
+| # | Finding | Numbers |
+|---|---|---|
+| 1 | Growth came from new stores | Reported revenue +112.2% ($565,238 → $1,199,308); same-store +8.4%. New stores supplied 92.5% of the increase. |
+| 2 | The stable margin is structural | Gross margin was 59.64% in 1997 and 59.68% in 1998. Each product has one fixed price and cost, so margin moves only with product mix. |
+| 3 | Revenue is concentrated but broad | The top 10% of 8,842 active customers generate 39.9% of revenue, and the top 20% generate 58.1%. The repeat rate is 86.1%. |
+| 4 | Golden members spend most per head | Golden $219.72 vs Silver $178.35 per customer. Bronze is 55.9% of revenue. |
+| 5 | Store size does not predict revenue | Correlation of floor area with 1998 revenue is −0.10. Revenue per sq ft ranges from $0.20 to $6.15. |
+| 6 | Returns are low overall | Return rate (proxy) is 0.99% (8,289 of 833,489 units). The highest store is Store 8 at 1.17%; four stores have no returns recorded. |
 
-- Did sales growth also improve gross product profit?
-- How much of the 1998 growth came from additional store coverage?
-- Which stores and regions are growing or declining?
-- Which products sell well but generate weaker margins?
-- Which customer groups contribute the most value?
-- Where are return rates unusually high?
+Implications and recommendations: [docs/09_insights_and_recommendations.md](docs/09_insights_and_recommendations.md).
 
-## Documentation
+## Data and data model
 
-- [Project definition](docs/01_project_definition.md)
-- [Business questions](docs/02_business_questions.md)
-- [Data audit](docs/03_data_audit.md)
-- [Data cleaning](docs/04_data_cleaning.md)
-- [Data modeling](docs/05_data_modeling.md)
-- [Data quality report](reports/data_quality_report.md)
-- [Data cleaning report](reports/data_cleaning_report.md)
-- [Data modeling report](reports/data_modeling_report.md)
-- [Processed-data dictionary](reports/data_dictionary.md)
-- [Model dictionary](reports/data_model_dictionary.md)
-- [Exploratory data analysis](docs/06_exploratory_data_analysis.md)
-- [KPI design](docs/07_kpi_design.md)
-- [Power BI dashboard](docs/08_power_bi_dashboard.md)
+The source is the Maven Market sample dataset (Kaggle). It has eight CSV files: 269,720 transaction rows, 7,087 return rows, 10,281 customers, 1,560 products and 24 stores, from 1 January 1997 to 31 December 1998.
 
-## Data audit summary
-
-The eight raw files contain 269,720 transaction rows, 7,087 return rows, 10,281 customers, 1,560 products, and 24 stores.
-
-The main analytical risk is year-over-year comparability. Only 13 stores have transaction activity in 1997, compared with all 24 stores in 1998. The dashboard will therefore separate total-company growth from same-store growth.
-
-No orphan product, customer, store, or region keys were found. Quantities, prices, costs, store areas, and tested date rules passed validation.
-
-## Data cleaning summary
-
-The cleaning pipeline preserves all source rows and writes seven standardized files to `data/processed/`.
-
-Key decisions:
-
-- merge the two transaction files while keeping source lineage;
-- add line IDs to transactions and returns;
-- flag duplicate candidates rather than removing uncertain records;
-- parse dates and standardize their export format;
-- keep account numbers, postal codes, SKUs, phone numbers, and line IDs as identifiers;
-- convert blank/1 product flags to booleans;
-- preserve the one missing surname through a separate missing-value flag.
-
-Run the cleaning stage from the repository root:
-
-```powershell
-python scripts/data_cleaning.py
-```
-
-## Data model
-
-The Power BI import layer uses a star schema with two facts and four dimensions:
+The analysis uses a star schema with two facts and four dimensions:
 
 ```text
-DimDate       ─┬─> FactSales
+DimDate       ─┬─> FactSales   (transaction date active, stock date inactive)
                └─> FactReturns
 DimCustomer   ───> FactSales
 DimProduct    ─┬─> FactSales
                └─> FactReturns
-DimStore      ─┬─> FactSales
+DimStore      ─┬─> FactSales   (store attributes include region)
                └─> FactReturns
 ```
-
-`DimStore` includes the Region attributes to avoid an unnecessary snowflake. Sales and returns remain separate facts because return records cannot be linked to a customer or original transaction.
-
-The model build produced:
 
 | Table | Rows |
 |---|---:|
@@ -96,112 +58,127 @@ The model build produced:
 | `fact_sales` | 269,720 |
 | `fact_returns` | 7,087 |
 
-The model reconciles to **$1,764,546.44 revenue**, **$711,727.66 product cost**, and **$1,052,818.78 gross product profit**. All model validation checks passed.
+The model reconciles to **$1,764,546.44 revenue**, **$711,727.66 product cost** and **$1,052,818.78 gross product profit**. Sales and returns stay separate facts, because returns cannot be linked to a customer or a sales line.
 
-Build the model after cleaning:
+## Method
+
+1. **Audit** the raw files without changing them: profiling, referential integrity and business rules.
+2. **Clean** with documented rules: keep all source rows, flag duplicate candidates, apply explicit types.
+3. **Model** a validated star schema for Power BI.
+4. **Explore** the business questions and test which comparisons are valid (reported vs same-store growth).
+5. **Design KPIs** with clear denominators: 63 DAX measures in `dax/`.
+6. **Build the report** as a Power BI project (`.pbip`, TMDL + PBIR) generated from the design.
+7. **Validate** every measure on the Power BI Desktop engine against the KPI snapshot and independent pandas calculations (124 of 124 checks passed).
+
+Definitions:
+
+- **Revenue** = quantity × retail price
+- **Gross product profit** = revenue − quantity × product cost
+- **Gross margin** = gross product profit ÷ revenue
+- **Same-store growth** uses only the 13 stores with sales in both years.
+- **Return rate (proxy)** = returned units ÷ units sold.
+
+## Data quality
+
+The audit found no orphan keys and no failed business rules: quantities, prices above cost, store areas and date order all passed. Points carried into the analysis:
+
+- **3 high-severity findings:** there is no transaction ID and no return ID, and store coverage changes from 13 stores (1997) to 24 (1998).
+- **Duplicate-looking rows:** 9 transaction rows and 5 return rows repeat every field. They are flagged, not removed, because no source ID can confirm them.
+- **Encoding fixes:** blank product flags mean false (687 recyclable, 1,008 low-fat blanks). 20 four-digit postal codes were restored to text. One customer has no surname.
+- **Calendar gaps:** 57 calendar dates have no sales rows (42 in 1997, 15 in 1998).
+
+Details: [reports/data_quality_report.md](reports/data_quality_report.md) and [reports/data_cleaning_report.md](reports/data_cleaning_report.md).
+
+## Limitations
+
+- **No order ID.** Rows are product lines, so order count, basket size and average order value cannot be calculated.
+- **Return rate is a proxy.** Returns cannot be matched to the original sale or customer; the rate is directional.
+- **Fixed price list.** One price and one cost per product means margin analysis measures product mix only. There is no discount or cost-change data.
+- **Only two years.** That is not enough for robust seasonality or forecasting, and 11 stores have only one year of sales.
+- Gross product profit excludes operating costs and is not net profit.
+
+## How to open the dashboard
+
+1. **Read the PDF first:** [dashboard/dashboard.pdf](dashboard/dashboard.pdf), or the page images above. No software is needed.
+2. **Open it in Power BI Desktop:**
+   - Build or unzip the data so that `data/model/*.csv` exists (see below).
+   - Open `dashboard/MavenMarket.pbip`.
+   - Go to **Transform data → Edit parameters** and set **DataFolder** to the full path of your `data/model` folder.
+   - Click **Refresh**.
+3. **If the refresh crashes or runs out of memory,** go to **File → Options and settings → Options → Global → Data Load**. Set **Maximum number of simultaneous evaluations** to **1**, then refresh again.
+
+## How to reproduce
+
+Requirements: Python 3.12+ and Power BI Desktop (only for the report). Download the eight Kaggle CSV files into `data/raw/`; the expected names are in [data/raw/README.md](data/raw/README.md).
 
 ```powershell
-python scripts/build_star_schema.py
+python -m venv .venv
+.venv\Scripts\activate
+pip install -r requirements.txt
+
+python scripts/data_audit.py                # reports/data_quality_report.md
+python scripts/data_cleaning.py             # data/processed/
+python scripts/build_star_schema.py         # data/model/
+python scripts/exploratory_data_analysis.py # reports/eda_summary.md, images/eda/
+python scripts/calculate_kpis.py            # reports/kpi_baseline_snapshot.csv
+python scripts/build_power_bi_report.py     # dashboard/MavenMarket.pbip
+
+python -m pytest                            # 170+ tests: pipeline, model, layout
 ```
 
-The same workflow is documented in [`notebooks/05_data_modeling.ipynb`](notebooks/05_data_modeling.ipynb).
+The data files are not stored in git. If you received the project zip, `data/model/` is already included and you can open the dashboard directly.
 
-## Power BI report
-
-`dashboard/MavenMarket.pbip` is a Power BI project with a TMDL semantic model and a PBIR report. It has six pages: Executive Overview, Sales Performance, Product & Profitability, Customer Analysis, Store & Geographic Performance, and Returns & Detailed Analysis. The project is generated from the Stage 8 design and the DAX files:
+Optional steps with the report open in Power BI Desktop:
 
 ```powershell
-python scripts/build_power_bi_report.py
+python scripts/validate_power_bi_measures.py --refresh   # all measures on the Desktop engine
+python scripts/export_dashboard_images.py                # after File > Export > Export to PDF
 ```
 
-The model reads `data/model` through the `DataFolder` parameter. After cloning, build the data, open the `.pbip` in Power BI Desktop, set **Transform data → Edit parameters → DataFolder** to your `data/model` path, and refresh.
-
-Unfiltered card values:
-
-| Card | Value |
-|---|---:|
-| Total revenue | $1.76M |
-| Gross product profit | $1.05M |
-| Reported growth, latest year (1998) | +112.2% |
-| Same-store growth, latest year (1998) | +8.4% |
-| Return rate (proxy) | 1.0% |
-| Active customers | 8,842 |
-
-All 63 measures were checked on the Power BI Desktop engine against the KPI snapshot and independent pandas calculations (`reports/power_bi_measure_validation.csv`).
-
-One finding needs care: gross margin stayed close to 59.7% because each product has a single retail price and product cost for the whole period. Margin can only move with product mix, so its stability is a property of the data, not evidence of pricing performance.
-
-## Tests
-
-```powershell
-python -m pytest
-```
-
-The suite checks pipeline reconciliation, the TMDL model (parsed with Power BI Desktop's Tabular Object Model), PBIR schemas and the report layout rules. Tests that need Power BI Desktop are skipped when it is not installed.
-
-## Data
-
-Raw Kaggle files are stored locally in `data/raw/` and are not committed. Their expected filenames are listed in [`data/raw/README.md`](data/raw/README.md).
-
-Cleaned CSV files are generated in `data/processed/`. The Power BI-ready star-schema tables are generated in `data/model/`. Both folders keep only their README files in GitHub because the datasets can be rebuilt from the scripts.
-
-## Current metric definitions
-
-- **Revenue** = Quantity × Retail Price
-- **Product Cost** = Quantity × Product Cost
-- **Gross Product Profit** = Revenue − Product Cost
-- **Gross Profit Margin** = Gross Product Profit ÷ Revenue
-
-The dataset has no order identifier. Transaction rows are therefore not treated as orders, and metrics such as Total Orders and Average Order Value will not be reported.
-
-## Repository structure
+## Project structure
 
 ```text
 maven-market-retail-intelligence/
-├── data/
-│   ├── raw/
-│   │   └── README.md
-│   ├── processed/
-│   │   └── README.md
-│   └── model/
-│       └── README.md
 ├── dashboard/
-│   ├── MavenMarket.pbip
-│   ├── MavenMarket.SemanticModel/
-│   └── MavenMarket.Report/
-├── dax/
-├── docs/
-│   ├── 01_project_definition.md
-│   ├── 02_business_questions.md
-│   ├── 03_data_audit.md
-│   ├── 04_data_cleaning.md
-│   └── 05_data_modeling.md
+│   ├── MavenMarket.pbip            # Power BI project (open this)
+│   ├── MavenMarket.SemanticModel/  # TMDL model
+│   ├── MavenMarket.Report/         # PBIR report, 6 pages
+│   ├── dashboard.pdf               # exported report
+│   ├── wireframes/                 # design wireframes
+│   └── maven_market_power_bi_theme.json
+├── data/                           # raw, processed and model CSVs (rebuilt by scripts)
+├── dax/                            # KPI and dashboard measures
+├── docs/                           # stage documents 01–09
 ├── images/
-├── notebooks/
-│   ├── 03_data_audit.ipynb
-│   ├── 04_data_cleaning.ipynb
-│   └── 05_data_modeling.ipynb
-├── reports/
-│   ├── data_quality_report.md
-│   ├── data_cleaning_report.md
-│   ├── data_modeling_report.md
-│   ├── data_model_dictionary.md
-│   ├── model_relationships.csv
-│   ├── model_table_profile.csv
-│   └── model_validation.json
-├── scripts/
-│   ├── data_audit.py
-│   ├── data_cleaning.py
-│   ├── build_star_schema.py
-│   ├── exploratory_data_analysis.py
-│   ├── calculate_kpis.py
-│   ├── build_power_bi_report.py
-│   ├── validate_power_bi_measures.py
-│   └── power_bi_desktop_engine.ps1
-├── sql/
-│   └── 01_create_star_schema.sql
-├── tests/
-├── requirements.txt
-├── .gitignore
-└── README.md
+│   ├── dashboard/                  # report page images
+│   └── eda/                        # analysis charts
+├── notebooks/                      # stage notebooks 03–07
+├── reports/                        # audit, cleaning, model, EDA, KPI and validation outputs
+├── scripts/                        # reproducible pipeline and report build
+├── sql/                            # star-schema DDL
+├── tests/                          # pytest suite and vendored PBIR schemas
+└── requirements.txt
 ```
+
+## Tech stack
+
+- **Python:** pandas, NumPy, Matplotlib, Jupyter, pytest, jsonschema, PyMuPDF
+- **Power BI Desktop:** a `.pbip` project with a TMDL semantic model, a PBIR report, DAX measures and Power Query (M)
+- **Validation:** Tabular Object Model and ADOMD.NET (Power BI Desktop's local engine), and Microsoft's PBIR JSON schemas
+- **SQL:** star-schema DDL
+
+## Documentation
+
+1. [Project definition](docs/01_project_definition.md)
+2. [Business questions](docs/02_business_questions.md)
+3. [Data audit](docs/03_data_audit.md)
+4. [Data cleaning](docs/04_data_cleaning.md)
+5. [Data modeling](docs/05_data_modeling.md)
+6. [Exploratory data analysis](docs/06_exploratory_data_analysis.md)
+7. [KPI design](docs/07_kpi_design.md)
+8. [Power BI dashboard](docs/08_power_bi_dashboard.md)
+9. [Insights and recommendations](docs/09_insights_and_recommendations.md)
+
+## Author
+
+**Atefeh Kalamati** · [github.com/atefekalamati](https://github.com/atefekalamati)
