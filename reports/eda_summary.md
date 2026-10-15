@@ -25,9 +25,13 @@ Reported revenue increased by **112.2%** in 1998, while revenue from the 13 stor
 
 ![Reported versus same-store growth](../images/eda/02_reported_vs_same_store_growth.png)
 
-### 2. Gross margin remained almost unchanged
+### 2. The stable gross margin is a property of the price list, not a business result
 
-Gross margin stayed close to **59.67%** across the period. Revenue and profit moved at nearly the same rate, which suggests that the improvement came mainly from higher sales volume and wider store coverage rather than a change in product margin.
+Gross margin was **59.64%** in 1997 and **59.68%** in 1998, and every month stayed between **59.54%** and **59.80%**. This stability should not be read as pricing discipline or cost control.
+
+The dataset stores one retail price and one product cost per product. Across 1,559 products sold, no product has more than 1 retail price or 1 product cost over the two years. Gross margin therefore cannot react to price changes, discounts or supplier costs; it moves only when the product mix changes. Product unit margins range from **49.0%** to **70.7%**, and a broad, stable mix averages them to about **59.7%**.
+
+The useful conclusion is narrower: profit growth came from volume and store coverage, and the product mix did not shift toward lower-margin items.
 
 ### 3. The end of 1998 was the strongest part of the period
 
@@ -64,7 +68,7 @@ The ratio is a monitoring proxy, not a matched return rate, because returns cann
 ## Recommended dashboard emphasis
 
 - Show reported growth and same-store growth together.
-- Keep gross margin next to revenue and profit so expansion is not mistaken for better unit economics.
+- Show gross margin as a product-mix check, not as a pricing KPI, because prices and costs are fixed per product.
 - Rank stores by both revenue and revenue per square foot.
 - Add a customer concentration view and membership-level comparison.
 - Use the return-rate proxy as an operational alert, with a visible methodology note.
@@ -75,4 +79,5 @@ The ratio is a monitoring proxy, not a matched return rate, because returns cann
 - Returns cannot be matched to a customer or sales line.
 - Gross product profit excludes operating expenses and is not net profit.
 - No discount, inventory, marketing campaign or sales-target data is available.
+- Retail price and product cost are fixed per product, so margin analysis can only measure product mix.
 - Two years of history are not enough for robust forecasting or long-term seasonality claims.

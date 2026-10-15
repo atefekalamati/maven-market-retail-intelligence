@@ -517,6 +517,13 @@ def build_summary(
     highest_member = member.nlargest(1, "revenue_per_customer").iloc[0]
     lowest_member = member.nsmallest(1, "revenue_per_customer").iloc[0]
 
+    # Prices and costs come from the product master, so each product should
+    # carry one retail price and one product cost for the whole period.
+    price_points = sales.groupby("product_key")[
+        ["unit_retail_price", "unit_product_cost"]
+    ].nunique()
+    unit_margins = sales.groupby("product_key")["unit_margin_pct"].first()
+
     total_revenue = float(sales["revenue"].sum())
     total_profit = float(sales["gross_product_profit"].sum())
     total_quantity = int(sales["quantity_sold"].sum())
@@ -526,6 +533,15 @@ def build_summary(
         "total_revenue": total_revenue,
         "total_gross_product_profit": total_profit,
         "gross_margin_pct": total_profit / total_revenue * 100,
+        "max_retail_prices_per_product": int(price_points["unit_retail_price"].max()),
+        "max_product_costs_per_product": int(price_points["unit_product_cost"].max()),
+        "products_sold": int(len(price_points)),
+        "min_product_unit_margin_pct": float(unit_margins.min()),
+        "max_product_unit_margin_pct": float(unit_margins.max()),
+        "gross_margin_1997_pct": float(annual.iloc[0]["gross_margin_pct"]),
+        "gross_margin_1998_pct": float(annual.iloc[-1]["gross_margin_pct"]),
+        "min_monthly_gross_margin_pct": float(monthly["gross_margin_pct"].min()),
+        "max_monthly_gross_margin_pct": float(monthly["gross_margin_pct"].max()),
         "quantity_sold": total_quantity,
         "return_quantity": total_return_quantity,
         "return_rate_proxy_pct": total_return_quantity / total_quantity * 100,
@@ -637,9 +653,13 @@ Reported revenue increased by **{summary['reported_revenue_growth_1998_pct']:.1f
 
 ![Reported versus same-store growth](../images/eda/02_reported_vs_same_store_growth.png)
 
-### 2. Gross margin remained almost unchanged
+### 2. The stable gross margin is a property of the price list, not a business result
 
-Gross margin stayed close to **{summary['gross_margin_pct']:.2f}%** across the period. Revenue and profit moved at nearly the same rate, which suggests that the improvement came mainly from higher sales volume and wider store coverage rather than a change in product margin.
+Gross margin was **{summary['gross_margin_1997_pct']:.2f}%** in 1997 and **{summary['gross_margin_1998_pct']:.2f}%** in 1998, and every month stayed between **{summary['min_monthly_gross_margin_pct']:.2f}%** and **{summary['max_monthly_gross_margin_pct']:.2f}%**. This stability should not be read as pricing discipline or cost control.
+
+The dataset stores one retail price and one product cost per product. Across {summary['products_sold']:,} products sold, no product has more than {summary['max_retail_prices_per_product']} retail price or {summary['max_product_costs_per_product']} product cost over the two years. Gross margin therefore cannot react to price changes, discounts or supplier costs; it moves only when the product mix changes. Product unit margins range from **{summary['min_product_unit_margin_pct']:.1f}%** to **{summary['max_product_unit_margin_pct']:.1f}%**, and a broad, stable mix averages them to about **{summary['gross_margin_pct']:.1f}%**.
+
+The useful conclusion is narrower: profit growth came from volume and store coverage, and the product mix did not shift toward lower-margin items.
 
 ### 3. The end of 1998 was the strongest part of the period
 
@@ -676,7 +696,7 @@ The ratio is a monitoring proxy, not a matched return rate, because returns cann
 ## Recommended dashboard emphasis
 
 - Show reported growth and same-store growth together.
-- Keep gross margin next to revenue and profit so expansion is not mistaken for better unit economics.
+- Show gross margin as a product-mix check, not as a pricing KPI, because prices and costs are fixed per product.
 - Rank stores by both revenue and revenue per square foot.
 - Add a customer concentration view and membership-level comparison.
 - Use the return-rate proxy as an operational alert, with a visible methodology note.
@@ -687,6 +707,7 @@ The ratio is a monitoring proxy, not a matched return rate, because returns cann
 - Returns cannot be matched to a customer or sales line.
 - Gross product profit excludes operating expenses and is not net profit.
 - No discount, inventory, marketing campaign or sales-target data is available.
+- Retail price and product cost are fixed per product, so margin analysis can only measure product mix.
 - Two years of history are not enough for robust forecasting or long-term seasonality claims.
 """
     (reports_dir / "eda_summary.md").write_text(report, encoding="utf-8")

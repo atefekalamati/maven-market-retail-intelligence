@@ -1,0 +1,23 @@
+{
+  "name": "Maven Market Executive",
+  "dataColors": [
+    "#0F766E",
+    "#2563EB",
+    "#D97706",
+    "#7C3AED",
+    "#64748B",
+    "#B91C1C",
+    "#0891B2",
+    "#A16207"
+  ],
+  "background": "#F8FAFC",
+  "foreground": "#0F172A",
+  "tableAccent": "#0F766E",
+  "good": "#0F766E",
+  "neutral": "#D97706",
+  "bad": "#B91C1C",
+  "maximum": "#2563EB",
+  "center": "#64748B",
+  "minimum": "#CBD5E1",
+  "null": "#E2E8F0"
+}

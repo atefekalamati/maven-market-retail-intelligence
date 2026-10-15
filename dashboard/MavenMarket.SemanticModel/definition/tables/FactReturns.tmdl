@@ -1,0 +1,101 @@
+table FactReturns
+	lineageTag: 5cf83b37-aa89-5836-bb12-5a537dbc5e7a
+
+	column return_line_key
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 35e8bb2f-bd7f-5de5-a472-35910b357be5
+		summarizeBy: none
+		sourceColumn: return_line_key
+
+		annotation SummarizationSetBy = User
+
+	column return_line_id
+		dataType: string
+		lineageTag: 1b6f0218-94e8-5846-a0da-b3a06e47939c
+		summarizeBy: none
+		sourceColumn: return_line_id
+
+		annotation SummarizationSetBy = User
+
+	column return_date_key
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: e0c22a77-9c5c-5132-a355-79359efb0918
+		summarizeBy: none
+		sourceColumn: return_date_key
+
+		annotation SummarizationSetBy = User
+
+	column product_key
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 12282b74-611d-5a31-bddd-988ef8090275
+		summarizeBy: none
+		sourceColumn: product_key
+
+		annotation SummarizationSetBy = User
+
+	column store_key
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: f12f8f60-bfaf-5054-a94d-8add35b99a35
+		summarizeBy: none
+		sourceColumn: store_key
+
+		annotation SummarizationSetBy = User
+
+	column return_quantity
+		dataType: int64
+		formatString: #,0
+		lineageTag: 37a3de45-42ae-5f77-9556-c8a4074d25dd
+		summarizeBy: none
+		sourceColumn: return_quantity
+
+		annotation SummarizationSetBy = User
+
+	column source_row_number
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: ce6b2b75-cb33-54c5-83ec-0adb6c198651
+		summarizeBy: none
+		sourceColumn: source_row_number
+
+		annotation SummarizationSetBy = User
+
+	column duplicate_candidate
+		dataType: boolean
+		lineageTag: 3ff065c0-9966-507c-8638-d82f3259aa4b
+		summarizeBy: none
+		sourceColumn: duplicate_candidate
+
+		annotation SummarizationSetBy = User
+
+	partition FactReturns = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents(DataFolder & "\fact_returns.csv"), [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+				    PromotedHeaders = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
+				    ChangedTypes = Table.TransformColumnTypes(
+				        PromotedHeaders,
+				        {
+				        {"return_line_key", Int64.Type},
+				        {"return_line_id", type text},
+				        {"return_date_key", Int64.Type},
+				        {"product_key", Int64.Type},
+				        {"store_key", Int64.Type},
+				        {"return_quantity", Int64.Type},
+				        {"source_row_number", Int64.Type},
+				        {"duplicate_candidate", type logical}
+				        },
+				        "en-US"
+				    )
+				in
+				    ChangedTypes
+

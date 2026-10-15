@@ -1,5 +1,7 @@
 # Power BI Build Guide
 
+The report is generated as `dashboard/MavenMarket.pbip` by `scripts/build_power_bi_report.py`, following this guide. Use the steps below as the reference for what the project contains, or to rebuild the report by hand. See `docs/08_power_bi_dashboard.md` for the implementation notes and deviations.
+
 ## 1. Load the model
 
 Load the CSV files produced in `data/model`:

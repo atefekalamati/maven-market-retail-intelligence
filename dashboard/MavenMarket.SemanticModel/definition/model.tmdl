@@ -1,0 +1,24 @@
+model Model
+	culture: en-US
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	discourageImplicitMeasures
+	sourceQueryCulture: en-US
+	maxParallelismPerRefresh: 1
+	dataAccessOptions
+		legacyRedirects
+		returnErrorValuesAsNull
+
+annotation PBI_QueryOrder = ["DataFolder", "DimDate", "DimCustomer", "DimProduct", "DimStore", "FactSales", "FactReturns", "_Measures"]
+
+annotation __PBI_TimeIntelligenceEnabled = 0
+
+annotation PBIDesktopVersion = 2.156.951.0 (26.07)
+
+ref table DimDate
+ref table DimCustomer
+ref table DimProduct
+ref table DimStore
+ref table FactSales
+ref table FactReturns
+ref table CustomerPercentile
+ref table _Measures

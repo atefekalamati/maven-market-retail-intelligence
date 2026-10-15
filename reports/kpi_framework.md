@@ -39,7 +39,7 @@ Quantity Sold, Active Customers and Return Quantity Rate should appear as second
 
 The 1998 reported revenue increase was **112.18%**, while same-store revenue increased by **8.40%**. The difference is explained by the active store count increasing from **13** to **24**.
 
-Gross margin stayed close to **59.67%**. The network expanded without a material change in product-level margin.
+Gross margin stayed close to **59.67%**, but this is structural: each product has one fixed retail price and one fixed product cost, so margin moves only with product mix. The stable figure shows that the mix did not shift toward lower-margin products; it does not show pricing or cost performance.
 
 The top 10% of active customers generated **39.89%** of revenue. This is large enough to support a customer-concentration view, but the business is not dependent on only a handful of customers.
 

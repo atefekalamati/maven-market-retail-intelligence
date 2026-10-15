@@ -1,0 +1,183 @@
+table FactSales
+	lineageTag: 646bd933-4568-53e9-b35d-b7574ea79187
+
+	column sales_line_key
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 9fcffefa-0840-506c-9250-76fdd5c05b13
+		summarizeBy: none
+		sourceColumn: sales_line_key
+
+		annotation SummarizationSetBy = User
+
+	column transaction_line_id
+		dataType: string
+		lineageTag: 0edfb3c4-72a0-5eef-969d-2ee34f3bfeb8
+		summarizeBy: none
+		sourceColumn: transaction_line_id
+
+		annotation SummarizationSetBy = User
+
+	column transaction_date_key
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: fddcf3e0-f156-5602-a884-f5ab8e48653b
+		summarizeBy: none
+		sourceColumn: transaction_date_key
+
+		annotation SummarizationSetBy = User
+
+	column stock_date_key
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: d99c3a99-e84a-581e-97f9-9edcef711ec3
+		summarizeBy: none
+		sourceColumn: stock_date_key
+
+		annotation SummarizationSetBy = User
+
+	column product_key
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: bbd28f6e-bdb0-5a7a-9443-354d49964123
+		summarizeBy: none
+		sourceColumn: product_key
+
+		annotation SummarizationSetBy = User
+
+	column customer_key
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 288845f2-59c7-541e-9170-00e0dc014b90
+		summarizeBy: none
+		sourceColumn: customer_key
+
+		annotation SummarizationSetBy = User
+
+	column store_key
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 54bb26ac-fa86-5590-9c0d-8d69da8ecb10
+		summarizeBy: none
+		sourceColumn: store_key
+
+		annotation SummarizationSetBy = User
+
+	column quantity_sold
+		dataType: int64
+		formatString: #,0
+		lineageTag: 85c73685-6f15-58c4-8ddd-fddc6d1e3eb4
+		summarizeBy: none
+		sourceColumn: quantity_sold
+
+		annotation SummarizationSetBy = User
+
+	column unit_retail_price
+		dataType: decimal
+		formatString: \$#,0.00;-\$#,0.00;\$#,0.00
+		lineageTag: 9fb3aeef-aae0-568a-8d8b-45f47e3b23ed
+		summarizeBy: none
+		sourceColumn: unit_retail_price
+
+		annotation SummarizationSetBy = User
+
+	column unit_product_cost
+		dataType: decimal
+		formatString: \$#,0.00;-\$#,0.00;\$#,0.00
+		lineageTag: bb4d0ec5-8974-59c3-83b2-af3c69558a93
+		summarizeBy: none
+		sourceColumn: unit_product_cost
+
+		annotation SummarizationSetBy = User
+
+	column revenue
+		dataType: decimal
+		formatString: \$#,0.00;-\$#,0.00;\$#,0.00
+		lineageTag: c6ca861c-aa75-5330-853c-8f4f6f6ddff6
+		summarizeBy: none
+		sourceColumn: revenue
+
+		annotation SummarizationSetBy = User
+
+	column product_cost_amount
+		dataType: decimal
+		formatString: \$#,0.00;-\$#,0.00;\$#,0.00
+		lineageTag: 77ae3cd7-fcb4-5b14-8f76-87b2e827cacf
+		summarizeBy: none
+		sourceColumn: product_cost_amount
+
+		annotation SummarizationSetBy = User
+
+	column gross_product_profit
+		dataType: decimal
+		formatString: \$#,0.00;-\$#,0.00;\$#,0.00
+		lineageTag: f1448ec1-8d79-5135-9818-968930e452fb
+		summarizeBy: none
+		sourceColumn: gross_product_profit
+
+		annotation SummarizationSetBy = User
+
+	column source_year
+		dataType: int64
+		formatString: 0
+		lineageTag: c5d371f9-aa0c-5e35-872b-32ef67628cbb
+		summarizeBy: none
+		sourceColumn: source_year
+
+		annotation SummarizationSetBy = User
+
+	column source_row_number
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: bb634c49-05a0-5616-bcb2-b7bea4707109
+		summarizeBy: none
+		sourceColumn: source_row_number
+
+		annotation SummarizationSetBy = User
+
+	column duplicate_candidate
+		dataType: boolean
+		lineageTag: 70ae7654-1707-5109-afef-35bcbbaef381
+		summarizeBy: none
+		sourceColumn: duplicate_candidate
+
+		annotation SummarizationSetBy = User
+
+	partition FactSales = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents(DataFolder & "\fact_sales.csv"), [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+				    PromotedHeaders = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
+				    ChangedTypes = Table.TransformColumnTypes(
+				        PromotedHeaders,
+				        {
+				        {"sales_line_key", Int64.Type},
+				        {"transaction_line_id", type text},
+				        {"transaction_date_key", Int64.Type},
+				        {"stock_date_key", Int64.Type},
+				        {"product_key", Int64.Type},
+				        {"customer_key", Int64.Type},
+				        {"store_key", Int64.Type},
+				        {"quantity_sold", Int64.Type},
+				        {"unit_retail_price", Currency.Type},
+				        {"unit_product_cost", Currency.Type},
+				        {"revenue", Currency.Type},
+				        {"product_cost_amount", Currency.Type},
+				        {"gross_product_profit", Currency.Type},
+				        {"source_year", Int64.Type},
+				        {"source_row_number", Int64.Type},
+				        {"duplicate_candidate", type logical}
+				        },
+				        "en-US"
+				    )
+				in
+				    ChangedTypes
+

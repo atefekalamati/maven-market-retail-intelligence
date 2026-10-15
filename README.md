@@ -9,9 +9,9 @@ An end-to-end retail analytics portfolio project covering sales, gross product p
 - [x] Data audit
 - [x] Data cleaning
 - [x] Data modeling
-- [ ] Exploratory data analysis
-- [ ] KPI design
-- [ ] Power BI dashboard
+- [x] Exploratory data analysis
+- [x] KPI design
+- [x] Power BI dashboard
 - [ ] Final insights and recommendations
 
 ## Project question
@@ -37,6 +37,9 @@ Maven Market stores its sales, customer, product, store, region, and return data
 - [Data modeling report](reports/data_modeling_report.md)
 - [Processed-data dictionary](reports/data_dictionary.md)
 - [Model dictionary](reports/data_model_dictionary.md)
+- [Exploratory data analysis](docs/06_exploratory_data_analysis.md)
+- [KPI design](docs/07_kpi_design.md)
+- [Power BI dashboard](docs/08_power_bi_dashboard.md)
 
 ## Data audit summary
 
@@ -103,6 +106,39 @@ python scripts/build_star_schema.py
 
 The same workflow is documented in [`notebooks/05_data_modeling.ipynb`](notebooks/05_data_modeling.ipynb).
 
+## Power BI report
+
+`dashboard/MavenMarket.pbip` is a Power BI project with a TMDL semantic model and a PBIR report. It has six pages: Executive Overview, Sales Performance, Product & Profitability, Customer Analysis, Store & Geographic Performance, and Returns & Detailed Analysis. The project is generated from the Stage 8 design and the DAX files:
+
+```powershell
+python scripts/build_power_bi_report.py
+```
+
+The model reads `data/model` through the `DataFolder` parameter. After cloning, build the data, open the `.pbip` in Power BI Desktop, set **Transform data → Edit parameters → DataFolder** to your `data/model` path, and refresh.
+
+Unfiltered card values:
+
+| Card | Value |
+|---|---:|
+| Total revenue | $1.76M |
+| Gross product profit | $1.05M |
+| Reported growth, latest year (1998) | +112.2% |
+| Same-store growth, latest year (1998) | +8.4% |
+| Return rate (proxy) | 1.0% |
+| Active customers | 8,842 |
+
+All 63 measures were checked on the Power BI Desktop engine against the KPI snapshot and independent pandas calculations (`reports/power_bi_measure_validation.csv`).
+
+One finding needs care: gross margin stayed close to 59.7% because each product has a single retail price and product cost for the whole period. Margin can only move with product mix, so its stability is a property of the data, not evidence of pricing performance.
+
+## Tests
+
+```powershell
+python -m pytest
+```
+
+The suite checks pipeline reconciliation, the TMDL model (parsed with Power BI Desktop's Tabular Object Model), PBIR schemas and the report layout rules. Tests that need Power BI Desktop are skipped when it is not installed.
+
 ## Data
 
 Raw Kaggle files are stored locally in `data/raw/` and are not committed. Their expected filenames are listed in [`data/raw/README.md`](data/raw/README.md).
@@ -130,6 +166,10 @@ maven-market-retail-intelligence/
 │   └── model/
 │       └── README.md
 ├── dashboard/
+│   ├── MavenMarket.pbip
+│   ├── MavenMarket.SemanticModel/
+│   └── MavenMarket.Report/
+├── dax/
 ├── docs/
 │   ├── 01_project_definition.md
 │   ├── 02_business_questions.md
@@ -152,9 +192,15 @@ maven-market-retail-intelligence/
 ├── scripts/
 │   ├── data_audit.py
 │   ├── data_cleaning.py
-│   └── build_star_schema.py
+│   ├── build_star_schema.py
+│   ├── exploratory_data_analysis.py
+│   ├── calculate_kpis.py
+│   ├── build_power_bi_report.py
+│   ├── validate_power_bi_measures.py
+│   └── power_bi_desktop_engine.ps1
 ├── sql/
 │   └── 01_create_star_schema.sql
+├── tests/
 ├── requirements.txt
 ├── .gitignore
 └── README.md

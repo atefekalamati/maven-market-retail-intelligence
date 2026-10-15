@@ -1,0 +1,10 @@
+{
+  "engine": "Power BI Desktop (local Analysis Services instance)",
+  "measures_in_model": 63,
+  "measures_validated": 63,
+  "checks": 124,
+  "checks_against_kpi_snapshot": 73,
+  "checks_against_model_csv": 51,
+  "failed_checks": 0,
+  "status": "passed"
+}

@@ -4,7 +4,7 @@
 
 This stage turns the analytical model and KPI definitions into a six-page Power BI report. The report is designed for a laptop screen and uses a fixed 16:9 canvas of 1280 × 720 pixels.
 
-The package contains the page plan, visual specifications, theme, wireframes and the additional DAX measures needed for interactions and time comparisons. It does not contain a `.pbix` file; the report must be assembled in Power BI Desktop using the model created in Stage 5.
+The package contains the page plan, visual specifications, theme, wireframes and the additional DAX measures needed for interactions and time comparisons. The report itself is a Power BI project (`dashboard/MavenMarket.pbip`) with a TMDL semantic model and a PBIR report, generated from this design by `scripts/build_power_bi_report.py`. See [Implementation](#implementation).
 
 ## Report pages
 
@@ -93,3 +93,71 @@ Import `dashboard/maven_market_power_bi_theme.json` from **View → Themes → B
 - Return Quantity Rate: 1.0%
 
 These values represent the full 1997–1998 dataset with no page filters. Filtered report views will differ.
+
+## Implementation
+
+### Files
+
+```text
+dashboard/
+├── MavenMarket.pbip                 # open this file in Power BI Desktop
+├── MavenMarket.SemanticModel/       # TMDL model
+│   └── definition/
+│       ├── expressions.tmdl         # DataFolder parameter
+│       ├── relationships.tmdl
+│       └── tables/*.tmdl
+└── MavenMarket.Report/              # PBIR report: 6 pages, 121 visuals
+    ├── definition/pages/<page>/visuals/<visual>/visual.json
+    └── StaticResources/             # base theme and the Maven Market theme
+```
+
+The project files are generated, not edited by hand. Change the design in `scripts/build_power_bi_report.py` (layout, visuals) or in `dax/` (measures), then rebuild:
+
+```powershell
+python scripts/build_power_bi_report.py
+```
+
+The build is deterministic: identifiers are derived from names, and no timestamps are written.
+
+### Semantic model
+
+- Six import tables read the `data/model` CSV files through the `DataFolder` text parameter. The default value is the absolute path of this repository's `data/model` folder; change it under **Transform data → Edit parameters** on another machine.
+- `_Measures` holds all 63 measures from `dax/07_kpi_measures.dax` and `dax/08_dashboard_measures.dax`, in the display folders from the build guide.
+- Relationships follow `reports/model_relationships.csv`: single-direction one-to-many, with the stock-date relationship inactive.
+- `DimDate` is marked as the date table (`DimDate[date]`). Auto date/time is off. `maxParallelismPerRefresh` is 1. Implicit measures are disabled.
+- `CustomerPercentile` is a calculated table (1–100) used by the customer concentration curve.
+
+### Report rules
+
+- Card values are 20 pt with 9 pt labels. Every page has a title, a one-line finding subtitle and a source footer.
+- Every visual sits inside the 1280 × 720 canvas, and no two visuals overlap.
+- Table totals are off, and tables limit their rows so they fit without scrollbars.
+- Bar charts show at most seven bars. At Power BI's minimum bar thickness (20 px), seven is the most a 238 px chart fits without a scrollbar.
+- Return-rate colours use fx rules on `[Return Rate vs Overall (pp)]`: dark red at ≥ 0.50 pp above the network rate, amber at ≥ 0.15 pp, slate otherwise. These are the same thresholds as `[Return Review Flag]`.
+- `Return Quantity Rate %` is labelled **Return rate (proxy)** everywhere.
+
+### Deviations from the visual specification
+
+| Spec | Implemented | Reason |
+|---|---|---|
+| Top 8 / Top 10 bar charts | Top 7 | Larger rankings need a scrollbar at this row height. |
+| OV-03 / SA growth cards on `[Revenue Growth %]` | `[Latest Year Revenue Growth %]`, `[Latest Year Same-Store Revenue Growth %]` | Without a year filter, `[Revenue Growth %]` compares 1997–1998 with 1996–1997 (212%). The latest-year measures give the 1998 values (112.2%, 8.4%) and are blank when no prior year exists. |
+| RE-04 row-level transaction table | Top 6 stores by returned units | A row-level table cannot fit without scrollbars. Drill-through from store and product visuals still filters this page. |
+| CU-03 horizontal bar | Column chart in income order | Eight bands do not fit as bars without a scrollbar. |
+| PR-04 / RE-03 minimum-volume filter | `[Product Return Rate (300+ Units) %]` | A measure-level threshold works together with the Top N filter. |
+| Product and store tooltip pages | Tooltip fields on the visuals | Not built. Create them in Desktop if needed. |
+| Reset Filters bookmark | Not built | Add it after the final slicer state is agreed, as planned above. |
+
+### Validation
+
+| Check | Command | Result |
+|---|---|---|
+| PBIR files against Microsoft's JSON schemas | `python -m pytest tests/test_layout.py` | passed |
+| TMDL parse with Power BI Desktop's Tabular Object Model | `python -m pytest tests/test_model.py` | passed |
+| All 63 measures on the Power BI Desktop engine | `python scripts/validate_power_bi_measures.py --refresh` (report open in Desktop) | 124 of 124 checks passed |
+| Layout rules, pipeline reconciliation | `python -m pytest` | passed |
+
+Measure results are in `reports/power_bi_measure_validation.csv`. Seventy-three checks compare KPI measures with `reports/kpi_baseline_snapshot.csv` (full period, 1997, 1998). Fifty-one checks compare the remaining measures with values calculated in pandas from the model CSV files. Per-unit ratios such as Revenue per Active Customer are compared to four decimal places, because the engine returns `DIVIDE(fixed decimal, whole number)` as a fixed decimal number.
+
+The vendored schemas in `tests/schemas/` can be refreshed with `python tests/fetch_pbir_schemas.py`.
+

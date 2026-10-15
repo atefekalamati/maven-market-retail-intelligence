@@ -1,0 +1,5 @@
+# Generated Power BI project files are written with LF line endings by
+# scripts/build_power_bi_report.py; keep them byte-identical on checkout.
+dashboard/MavenMarket.pbip text eol=lf
+dashboard/MavenMarket.SemanticModel/** text eol=lf
+dashboard/MavenMarket.Report/** text eol=lf

@@ -1,0 +1,579 @@
+table _Measures
+	lineageTag: 482ea3d8-0bca-5673-837f-f5821830dc8e
+
+	measure 'Total Revenue' =
+			SUM(FactSales[revenue])
+		formatString: \$#,0.00;-\$#,0.00;\$#,0.00
+		displayFolder: 01 Base
+		lineageTag: 4ae8327f-bfb5-57f0-9d11-c7c1977d8a0a
+
+	measure 'Total Product Cost' =
+			SUM(FactSales[product_cost_amount])
+		formatString: \$#,0.00;-\$#,0.00;\$#,0.00
+		displayFolder: 01 Base
+		lineageTag: ae115cd6-aa8c-58c7-8a49-0134b88d64c7
+
+	measure 'Gross Product Profit' =
+			SUM(FactSales[gross_product_profit])
+		formatString: \$#,0.00;-\$#,0.00;\$#,0.00
+		displayFolder: 01 Base
+		lineageTag: 935c1d8c-8cc5-532b-a0dd-05285b202750
+
+	measure 'Gross Margin %' =
+			DIVIDE([Gross Product Profit], [Total Revenue])
+		formatString: 0.0%
+		displayFolder: 01 Base
+		lineageTag: 809f3988-2733-5e0d-a4d4-74f1e9390921
+
+	measure 'Quantity Sold' =
+			SUM(FactSales[quantity_sold])
+		formatString: #,0
+		displayFolder: 01 Base
+		lineageTag: 04289571-613d-5b37-975d-3fdf0d9e6e0b
+
+	measure 'Sales Lines' =
+			COUNTROWS(FactSales)
+		formatString: #,0
+		displayFolder: 01 Base
+		lineageTag: 737c1a4f-39b4-5493-8190-45326e13c68a
+
+	measure 'Active Customers' =
+			DISTINCTCOUNT(FactSales[customer_key])
+		formatString: #,0
+		displayFolder: 01 Base
+		lineageTag: f4cb1e5c-3893-5fea-89c3-ee9a9a61d5e4
+
+	measure 'Active Stores' =
+			DISTINCTCOUNT(FactSales[store_key])
+		formatString: #,0
+		displayFolder: 01 Base
+		lineageTag: 0ecca50e-6c7f-5eb6-9870-ff4902ef13d4
+
+	measure 'Active Products' =
+			DISTINCTCOUNT(FactSales[product_key])
+		formatString: #,0
+		displayFolder: 01 Base
+		lineageTag: 7ab3cfd8-cd25-5732-bb20-e2a25583eb97
+
+	measure 'Returned Quantity' =
+			SUM(FactReturns[return_quantity])
+		formatString: #,0
+		displayFolder: 06 Returns
+		lineageTag: 02f9b03e-91d0-5e33-bd3c-9d5e5b8b4604
+
+	measure 'Return Quantity Rate %' =
+			DIVIDE([Returned Quantity], [Quantity Sold])
+		formatString: 0.0%
+		displayFolder: 06 Returns
+		lineageTag: 3e44c273-a8b7-5e67-94a4-27c86d61bbda
+
+	measure 'Revenue Previous Year' =
+			CALCULATE(
+			    [Total Revenue],
+			    DATEADD(DimDate[date], -1, YEAR)
+			)
+		formatString: \$#,0.00;-\$#,0.00;\$#,0.00
+		displayFolder: 02 Time Intelligence
+		lineageTag: 2c34ee39-c192-5199-bd63-a8dc6e68235d
+
+	measure 'Revenue Growth %' =
+			DIVIDE(
+			    [Total Revenue] - [Revenue Previous Year],
+			    [Revenue Previous Year]
+			)
+		formatString: +0.0%;-0.0%;0.0%
+		displayFolder: 02 Time Intelligence
+		lineageTag: 1a362ad0-becd-57ee-9ed7-9687aa8d1820
+
+	measure 'Profit Previous Year' =
+			CALCULATE(
+			    [Gross Product Profit],
+			    DATEADD(DimDate[date], -1, YEAR)
+			)
+		formatString: \$#,0.00;-\$#,0.00;\$#,0.00
+		displayFolder: 02 Time Intelligence
+		lineageTag: 27456a91-6b3b-5017-b8d7-717101734b53
+
+	measure 'Profit Growth %' =
+			DIVIDE(
+			    [Gross Product Profit] - [Profit Previous Year],
+			    [Profit Previous Year]
+			)
+		formatString: +0.0%;-0.0%;0.0%
+		displayFolder: 02 Time Intelligence
+		lineageTag: d83b0e70-a420-5b19-86d4-c103bda3bf73
+
+	measure 'Same-Store Revenue' =
+			CALCULATE(
+			    [Total Revenue],
+			    KEEPFILTERS(DimStore[is_same_store_comparable] = TRUE())
+			)
+		formatString: \$#,0.00;-\$#,0.00;\$#,0.00
+		displayFolder: 02 Time Intelligence
+		lineageTag: 5ae855d6-561f-521e-8ed9-f32db889f924
+
+	measure 'Same-Store Revenue Previous Year' =
+			CALCULATE(
+			    [Same-Store Revenue],
+			    DATEADD(DimDate[date], -1, YEAR)
+			)
+		formatString: \$#,0.00;-\$#,0.00;\$#,0.00
+		displayFolder: 02 Time Intelligence
+		lineageTag: 753a5e5b-ff7b-5d8c-ba0a-30a5c43568ce
+
+	measure 'Same-Store Revenue Growth %' =
+			DIVIDE(
+			    [Same-Store Revenue] - [Same-Store Revenue Previous Year],
+			    [Same-Store Revenue Previous Year]
+			)
+		formatString: +0.0%;-0.0%;0.0%
+		displayFolder: 02 Time Intelligence
+		lineageTag: baf846f2-8433-50bb-abe6-848b09bff81c
+
+	measure 'Same-Store Profit' =
+			CALCULATE(
+			    [Gross Product Profit],
+			    KEEPFILTERS(DimStore[is_same_store_comparable] = TRUE())
+			)
+		formatString: \$#,0.00;-\$#,0.00;\$#,0.00
+		displayFolder: 02 Time Intelligence
+		lineageTag: 1d640645-7171-5abb-b2a3-306ce509f041
+
+	measure 'Same-Store Profit Previous Year' =
+			CALCULATE(
+			    [Same-Store Profit],
+			    DATEADD(DimDate[date], -1, YEAR)
+			)
+		formatString: \$#,0.00;-\$#,0.00;\$#,0.00
+		displayFolder: 02 Time Intelligence
+		lineageTag: 3ca7e5c2-550e-5d07-bb51-4f944f7b0043
+
+	measure 'Same-Store Profit Growth %' =
+			DIVIDE(
+			    [Same-Store Profit] - [Same-Store Profit Previous Year],
+			    [Same-Store Profit Previous Year]
+			)
+		formatString: +0.0%;-0.0%;0.0%
+		displayFolder: 02 Time Intelligence
+		lineageTag: 0995cefb-c8c8-54bd-a686-7ed53c22faa3
+
+	measure 'Revenue per Active Customer' =
+			DIVIDE([Total Revenue], [Active Customers])
+		formatString: \$#,0.00;-\$#,0.00;\$#,0.00
+		displayFolder: 03 Customer
+		lineageTag: a910386c-5e6d-5b18-a80c-01a9111f256e
+
+	measure 'Profit per Active Customer' =
+			DIVIDE([Gross Product Profit], [Active Customers])
+		formatString: \$#,0.00;-\$#,0.00;\$#,0.00
+		displayFolder: 03 Customer
+		lineageTag: dfdd98f5-0f2c-5949-811d-95002b442530
+
+	measure 'Repeat Customers' =
+			COUNTROWS(
+			    FILTER(
+			        VALUES(FactSales[customer_key]),
+			        CALCULATE(DISTINCTCOUNT(FactSales[transaction_date_key])) > 1
+			    )
+			)
+		formatString: #,0
+		displayFolder: 03 Customer
+		lineageTag: 768ab5f1-a379-5686-b40b-d76b9a46dff4
+
+	measure 'Repeat Customer Rate %' =
+			DIVIDE([Repeat Customers], [Active Customers])
+		formatString: 0.0%
+		displayFolder: 03 Customer
+		lineageTag: 1f3a1a13-2851-5dc0-b3e2-e2fe420709c7
+
+	measure 'Top 10% Customer Revenue' =
+			VAR CustomerCount = [Active Customers]
+			VAR TopCustomerCount = MAX(1, ROUNDUP(CustomerCount * 0.10, 0))
+			VAR CustomerRevenueTable =
+			    ADDCOLUMNS(
+			        ALLSELECTED(DimCustomer[customer_key]),
+			        "@Revenue", CALCULATE([Total Revenue])
+			    )
+			RETURN
+			    SUMX(
+			        TOPN(
+			            TopCustomerCount,
+			            CustomerRevenueTable,
+			            [@Revenue], DESC,
+			            DimCustomer[customer_key], ASC
+			        ),
+			        [@Revenue]
+			    )
+		formatString: \$#,0.00;-\$#,0.00;\$#,0.00
+		displayFolder: 03 Customer
+		lineageTag: 23579ebd-5599-5d1c-940d-c04e56016cf1
+
+	measure 'Top 10% Customer Revenue Contribution %' =
+			DIVIDE(
+			    [Top 10% Customer Revenue],
+			    CALCULATE(
+			        [Total Revenue],
+			        ALLSELECTED(DimCustomer[customer_key])
+			    )
+			)
+		formatString: 0.0%
+		displayFolder: 03 Customer
+		lineageTag: 2aac2faa-d1f6-5d8b-931c-e6556b6a0e5a
+
+	measure 'Revenue per Active Store' =
+			DIVIDE([Total Revenue], [Active Stores])
+		formatString: \$#,0.00;-\$#,0.00;\$#,0.00
+		displayFolder: 05 Store
+		lineageTag: cf3274f9-16ae-5be6-9747-fb1afca2ebd8
+
+	measure 'Profit per Active Store' =
+			DIVIDE([Gross Product Profit], [Active Stores])
+		formatString: \$#,0.00;-\$#,0.00;\$#,0.00
+		displayFolder: 05 Store
+		lineageTag: 77f24a39-9e83-50ab-ad96-aba3b3eb2c92
+
+	measure 'Active Store Area' =
+			SUMX(
+			    FILTER(
+			        VALUES(DimStore[store_key]),
+			        CALCULATE([Sales Lines]) > 0
+			    ),
+			    CALCULATE(MAX(DimStore[total_sqft]))
+			)
+		formatString: #,0
+		displayFolder: 05 Store
+		lineageTag: 7732cc6d-2b63-581d-a31e-1beec1b0061a
+
+	measure 'Revenue per Square Foot' =
+			DIVIDE([Total Revenue], [Active Store Area])
+		formatString: \$#,0.00;-\$#,0.00;\$#,0.00
+		displayFolder: 05 Store
+		lineageTag: 26a6086f-61cf-5bcf-bbbb-aa8625be15eb
+
+	measure 'Gross Profit per Square Foot' =
+			DIVIDE([Gross Product Profit], [Active Store Area])
+		formatString: \$#,0.00;-\$#,0.00;\$#,0.00
+		displayFolder: 05 Store
+		lineageTag: 032d6882-e70e-57ee-a85d-91a8dad3ee16
+
+	measure 'Average Revenue per Sales Line' =
+			DIVIDE([Total Revenue], [Sales Lines])
+		formatString: \$#,0.00;-\$#,0.00;\$#,0.00
+		displayFolder: 04 Product
+		lineageTag: 71de0e65-0c5b-58fe-8739-ef95223e5ece
+
+	measure 'Average Units per Sales Line' =
+			DIVIDE([Quantity Sold], [Sales Lines])
+		formatString: 0.00
+		displayFolder: 04 Product
+		lineageTag: cdb7ebcd-d0fa-55ef-b556-7cb32a24584d
+
+	measure 'Top Product Revenue' =
+			MAXX(
+			    ALLSELECTED(DimProduct[product_key]),
+			    CALCULATE([Total Revenue])
+			)
+		formatString: \$#,0.00;-\$#,0.00;\$#,0.00
+		displayFolder: 04 Product
+		lineageTag: 6ab5df56-2427-5786-b935-0dad20fe7577
+
+	measure 'Top Product Revenue Contribution %' =
+			DIVIDE(
+			    [Top Product Revenue],
+			    CALCULATE(
+			        [Total Revenue],
+			        ALLSELECTED(DimProduct[product_key])
+			    )
+			)
+		formatString: 0.00%
+		displayFolder: 04 Product
+		lineageTag: 73cebe1e-9643-5000-af15-8ac244aad277
+
+	measure 'Revenue YTD' =
+			TOTALYTD(
+			    [Total Revenue],
+			    DimDate[date]
+			)
+		formatString: \$#,0.00;-\$#,0.00;\$#,0.00
+		displayFolder: 02 Time Intelligence
+		lineageTag: 2b8a11e0-f8b3-53d0-8785-172c91faeda8
+
+	measure 'Gross Profit YTD' =
+			TOTALYTD(
+			    [Gross Product Profit],
+			    DimDate[date]
+			)
+		formatString: \$#,0.00;-\$#,0.00;\$#,0.00
+		displayFolder: 02 Time Intelligence
+		lineageTag: 1073d7c4-78a7-51bd-8c2f-ea9a8cade075
+
+	measure 'Revenue Previous Month' =
+			CALCULATE(
+			    [Total Revenue],
+			    DATEADD(DimDate[date], -1, MONTH)
+			)
+		formatString: \$#,0.00;-\$#,0.00;\$#,0.00
+		displayFolder: 02 Time Intelligence
+		lineageTag: 2e3ae849-7776-51f1-86cd-99b24f518515
+
+	measure 'Revenue MoM Growth %' =
+			DIVIDE(
+			    [Total Revenue] - [Revenue Previous Month],
+			    [Revenue Previous Month]
+			)
+		formatString: +0.0%;-0.0%;0.0%
+		displayFolder: 02 Time Intelligence
+		lineageTag: f98bc096-a737-5e40-8a47-b31f5a1cd166
+
+	measure 'Gross Profit Previous Month' =
+			CALCULATE(
+			    [Gross Product Profit],
+			    DATEADD(DimDate[date], -1, MONTH)
+			)
+		formatString: \$#,0.00;-\$#,0.00;\$#,0.00
+		displayFolder: 02 Time Intelligence
+		lineageTag: 2439cf95-99da-5db5-b92f-fe6a0ce068ea
+
+	measure 'Gross Profit MoM Growth %' =
+			DIVIDE(
+			    [Gross Product Profit] - [Gross Profit Previous Month],
+			    [Gross Profit Previous Month]
+			)
+		formatString: +0.0%;-0.0%;0.0%
+		displayFolder: 02 Time Intelligence
+		lineageTag: 0a2a6351-0824-5b2f-b9c5-f5d8032c4ebf
+
+	measure 'Revenue Running Total' =
+			CALCULATE(
+			    [Total Revenue],
+			    FILTER(
+			        ALLSELECTED(DimDate[date]),
+			        DimDate[date] <= MAX(DimDate[date])
+			    )
+			)
+		formatString: \$#,0.00;-\$#,0.00;\$#,0.00
+		displayFolder: 02 Time Intelligence
+		lineageTag: 124aa3c8-2397-5e51-b9a6-57acecfbbbcf
+
+	measure 'Store Revenue Rank' =
+			RANKX(
+			    ALLSELECTED(DimStore[store_name]),
+			    [Total Revenue],
+			    ,
+			    DESC,
+			    DENSE
+			)
+		formatString: 0
+		displayFolder: 05 Store
+		lineageTag: d6dfd736-28b4-5313-a3bf-98155879c9d4
+
+	measure 'Product Revenue Rank' =
+			RANKX(
+			    ALLSELECTED(DimProduct[product_name]),
+			    [Total Revenue],
+			    ,
+			    DESC,
+			    DENSE
+			)
+		formatString: 0
+		displayFolder: 04 Product
+		lineageTag: 9e5be439-380b-5739-b7ad-17b46df60758
+
+	measure 'Brand Profit Rank' =
+			RANKX(
+			    ALLSELECTED(DimProduct[product_brand]),
+			    [Gross Product Profit],
+			    ,
+			    DESC,
+			    DENSE
+			)
+		formatString: 0
+		displayFolder: 04 Product
+		lineageTag: 92eb7b05-8168-5675-a3bc-35c104275457
+
+	measure 'Return Rate vs Overall (pp)' =
+			VAR OverallRate =
+			    CALCULATE(
+			        [Return Quantity Rate %],
+			        REMOVEFILTERS(DimStore),
+			        REMOVEFILTERS(DimProduct)
+			    )
+			RETURN
+			    ([Return Quantity Rate %] - OverallRate) * 100
+		formatString: +0.00;-0.00;0.00
+		displayFolder: 06 Returns
+		lineageTag: f8cd98a0-d350-5e56-8d1c-df8f141c31f4
+
+	measure 'Selected Date Range' =
+			VAR StartDate = MIN(DimDate[date])
+			VAR EndDate = MAX(DimDate[date])
+			RETURN
+			    FORMAT(StartDate, "MMM d, yyyy")
+			        & " – "
+			        & FORMAT(EndDate, "MMM d, yyyy")
+		displayFolder: 07 Display
+		lineageTag: 594e8630-4676-569f-aad1-f2f8f6e91f0c
+
+	measure 'Selected Geography' =
+			VAR CountryCount = COUNTROWS(VALUES(DimStore[store_country]))
+			VAR RegionCount = COUNTROWS(VALUES(DimStore[sales_region]))
+			RETURN
+			    SWITCH(
+			        TRUE(),
+			        HASONEVALUE(DimStore[store_name]), SELECTEDVALUE(DimStore[store_name]),
+			        HASONEVALUE(DimStore[sales_region]), SELECTEDVALUE(DimStore[sales_region]),
+			        HASONEVALUE(DimStore[store_country]), SELECTEDVALUE(DimStore[store_country]),
+			        CountryCount > 1 || RegionCount > 1, "All selected locations",
+			        "All locations"
+			    )
+		displayFolder: 07 Display
+		lineageTag: 5a93da0b-c1de-52a8-ab1f-1fb8d4c0649f
+
+	measure 'Executive Page Subtitle' =
+			[Selected Date Range]
+			    & "  |  "
+			    & [Selected Geography]
+		displayFolder: 07 Display
+		lineageTag: a1b989e6-8a5b-5494-9f5e-778b69de03c3
+
+	measure 'Visible Store Count' =
+			DISTINCTCOUNT(FactSales[store_key])
+		formatString: #,0
+		displayFolder: 05 Store
+		lineageTag: ed414cf3-fb64-5f34-a302-f4592443ccc1
+
+	measure 'Visible Product Count' =
+			DISTINCTCOUNT(FactSales[product_key])
+		formatString: #,0
+		displayFolder: 04 Product
+		lineageTag: 9848951b-efa6-5b0c-afb5-389be5d8233b
+
+	measure 'Visible Customer Count' =
+			DISTINCTCOUNT(FactSales[customer_key])
+		formatString: #,0
+		displayFolder: 03 Customer
+		lineageTag: 13373d93-b8df-5d53-b47d-b2c27bb09950
+
+	measure 'Latest Year Revenue Growth %' =
+			VAR LatestYear = MAX(DimDate[year])
+			RETURN
+			    CALCULATE([Revenue Growth %], DimDate[year] = LatestYear)
+		formatString: +0.0%;-0.0%;0.0%
+		displayFolder: 02 Time Intelligence
+		lineageTag: f293b4c5-d131-557a-b28d-2a0c3e6183f9
+
+	measure 'Latest Year Same-Store Revenue Growth %' =
+			VAR LatestYear = MAX(DimDate[year])
+			RETURN
+			    CALCULATE([Same-Store Revenue Growth %], DimDate[year] = LatestYear)
+		formatString: +0.0%;-0.0%;0.0%
+		displayFolder: 02 Time Intelligence
+		lineageTag: 2682867f-bb66-513e-ba2e-0d5c5c5792eb
+
+	measure 'Reported Growth Label' =
+			IF(
+			    ISBLANK([Latest Year Revenue Growth %]),
+			    "No prior-year comparison",
+			    FORMAT([Latest Year Revenue Growth %], "+0.0%;-0.0%;0.0%")
+			)
+		displayFolder: 07 Display
+		lineageTag: fd28a93a-83bc-5f7d-b260-01ca74bf663f
+
+	measure 'Same-Store Growth Label' =
+			IF(
+			    ISBLANK([Latest Year Same-Store Revenue Growth %]),
+			    "No comparable-store baseline",
+			    FORMAT([Latest Year Same-Store Revenue Growth %], "+0.0%;-0.0%;0.0%")
+			)
+		displayFolder: 07 Display
+		lineageTag: 876418df-42ea-5561-b00c-fbf7f491d717
+
+	measure 'Comparable Stores' =
+			CALCULATE(
+			    [Active Stores],
+			    KEEPFILTERS(DimStore[is_same_store_comparable] = TRUE())
+			)
+		formatString: #,0
+		displayFolder: 05 Store
+		lineageTag: 9fce2db4-405c-57cb-b981-97917a171143
+
+	measure 'Return Lines' =
+			COUNTROWS(FactReturns)
+		formatString: #,0
+		displayFolder: 06 Returns
+		lineageTag: ca86b029-00a0-53c5-bf80-d6c5e25a47e1
+
+	measure 'Returned Products' =
+			DISTINCTCOUNT(FactReturns[product_key])
+		formatString: #,0
+		displayFolder: 06 Returns
+		lineageTag: ed7f991d-1f46-5c21-88c1-67b49cb8d02e
+
+	measure 'Product Return Rate (300+ Units) %' =
+			IF(
+			    [Quantity Sold] >= 300,
+			    [Return Quantity Rate %]
+			)
+		formatString: 0.0%
+		displayFolder: 06 Returns
+		lineageTag: c1a26fc4-7d96-5439-b494-0075edcb053d
+
+	measure 'Cumulative Customer Revenue Share %' =
+			VAR Percentile = SELECTEDVALUE(CustomerPercentile[Customer Percentile])
+			VAR CustomerRevenue =
+			    ADDCOLUMNS(
+			        VALUES(FactSales[customer_key]),
+			        "@Revenue", CALCULATE([Total Revenue])
+			    )
+			VAR CustomerCount = COUNTROWS(CustomerRevenue)
+			VAR TopCustomerCount = ROUNDUP(CustomerCount * Percentile / 100, 0)
+			VAR TopRevenue =
+			    SUMX(
+			        TOPN(
+			            TopCustomerCount,
+			            CustomerRevenue,
+			            [@Revenue], DESC,
+			            FactSales[customer_key], ASC
+			        ),
+			        [@Revenue]
+			    )
+			RETURN
+			    IF(
+			        NOT ISBLANK(Percentile) && CustomerCount > 0,
+			        DIVIDE(TopRevenue, SUMX(CustomerRevenue, [@Revenue]))
+			    )
+		formatString: 0.0%
+		displayFolder: 03 Customer
+		lineageTag: e3d30c4f-144b-5a1f-b051-b4ec20c7f8c0
+
+	measure 'Return Review Flag' =
+			VAR DifferencePP = [Return Rate vs Overall (pp)]
+			RETURN
+			    SWITCH(
+			        TRUE(),
+			        ISBLANK([Return Quantity Rate %]), "No return data",
+			        DifferencePP >= 0.50, "Review",
+			        DifferencePP >= 0.15, "Watch",
+			        "Within network range"
+			    )
+		displayFolder: 06 Returns
+		lineageTag: 459cacb1-df0d-58c9-bee8-4ad3b88e722b
+
+	column Placeholder
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 0059f658-edfc-507f-b90a-3070af97736e
+		summarizeBy: none
+		sourceColumn: Placeholder
+
+		annotation SummarizationSetBy = User
+
+	partition _Measures = m
+		mode: import
+		source =
+				let
+				    Source = #table(type table [Placeholder = Int64.Type], {})
+				in
+				    Source
+

@@ -46,6 +46,10 @@ Growth calculated only for the 13 stores with sales in both 1997 and 1998. This 
 
 This is not net profit because operating expenses are not available.
 
+### Fixed price list
+
+Retail price and product cost come from the product table, not from the transactions. Each product has one retail price and one product cost for the whole 1997–1998 period. Gross margin can therefore change only through product mix; it cannot show pricing, discounting or cost-control effects. The stable margin of about 59.7% is a structural feature of the data, not a business result.
+
 ### Return-rate proxy
 
 `Returned Quantity / Quantity Sold`

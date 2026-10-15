@@ -62,7 +62,7 @@ This file records the business meaning and implementation notes for each dashboa
 
 **How to read it:** Separates growth in sales volume from improvement in unit economics.
 
-**Limitation:** Stable gross margin does not imply stable net margin.
+**Limitation:** Price and cost are fixed per product, so margin moves only with product mix. Gross margin is not net margin.
 
 ### Reported Revenue Growth %
 

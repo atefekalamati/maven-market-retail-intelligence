@@ -1,0 +1,32 @@
+relationship 11df7e2f-b431-53c7-b00d-8cac6e66a8b5
+	fromColumn: FactSales.transaction_date_key
+	toColumn: DimDate.date_key
+
+relationship 3e36fee7-ee42-5215-adb2-679f3de30898
+	isActive: false
+	fromColumn: FactSales.stock_date_key
+	toColumn: DimDate.date_key
+
+relationship 37015f56-3b72-5cdf-8718-437773ba737a
+	fromColumn: FactReturns.return_date_key
+	toColumn: DimDate.date_key
+
+relationship 99ab324d-b36e-5b7d-921a-370ab2505fe1
+	fromColumn: FactSales.customer_key
+	toColumn: DimCustomer.customer_key
+
+relationship 5fd5ca4c-cf1c-5c2c-a941-278bf257ef66
+	fromColumn: FactSales.product_key
+	toColumn: DimProduct.product_key
+
+relationship b256ff5c-ae4e-5fdd-b2ed-0fbb4a5a2cbc
+	fromColumn: FactReturns.product_key
+	toColumn: DimProduct.product_key
+
+relationship 8e93a416-b16a-5cb4-94f5-8adb34aa7a3e
+	fromColumn: FactSales.store_key
+	toColumn: DimStore.store_key
+
+relationship 7ecbd777-ae79-5307-87a5-6a002ac41bce
+	fromColumn: FactReturns.store_key
+	toColumn: DimStore.store_key

@@ -1,0 +1,186 @@
+table DimStore
+	lineageTag: 25094539-70bc-5b7e-814d-a4b76a46f7e6
+
+	column store_key
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: f352ee2e-36e2-5b18-8466-c2328665464b
+		summarizeBy: none
+		sourceColumn: store_key
+
+		annotation SummarizationSetBy = User
+
+	column store_id
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 59def590-bbfa-5c5c-82b4-698b453cec50
+		summarizeBy: none
+		sourceColumn: store_id
+
+		annotation SummarizationSetBy = User
+
+	column store_name
+		dataType: string
+		lineageTag: cbf24759-dba1-529e-bfc3-0430dbb0e02f
+		summarizeBy: none
+		sourceColumn: store_name
+		sortByColumn: store_id
+
+		annotation SummarizationSetBy = User
+
+	column store_type
+		dataType: string
+		lineageTag: b45524e5-a4a7-5d32-a7ad-579ee6bb53c5
+		summarizeBy: none
+		sourceColumn: store_type
+
+		annotation SummarizationSetBy = User
+
+	column store_city
+		dataType: string
+		dataCategory: City
+		lineageTag: a3e704d1-858e-5159-85dc-8e639c9a0e31
+		summarizeBy: none
+		sourceColumn: store_city
+
+		annotation SummarizationSetBy = User
+
+	column store_state
+		dataType: string
+		dataCategory: StateOrProvince
+		lineageTag: 0fffe4a7-a540-521a-a2f2-e413eb907380
+		summarizeBy: none
+		sourceColumn: store_state
+
+		annotation SummarizationSetBy = User
+
+	column store_country
+		dataType: string
+		dataCategory: Country
+		lineageTag: 4e0e3a89-1199-5331-b7f3-9e1c170d29e3
+		summarizeBy: none
+		sourceColumn: store_country
+
+		annotation SummarizationSetBy = User
+
+	column first_opened_date
+		dataType: dateTime
+		formatString: yyyy-mm-dd
+		lineageTag: 4886e58c-60f6-593a-8a87-b46c11110e57
+		summarizeBy: none
+		sourceColumn: first_opened_date
+
+		annotation SummarizationSetBy = User
+
+	column last_remodel_date
+		dataType: dateTime
+		formatString: yyyy-mm-dd
+		lineageTag: ec56ff86-9c76-58a5-a1ea-5c80d422aca8
+		summarizeBy: none
+		sourceColumn: last_remodel_date
+
+		annotation SummarizationSetBy = User
+
+	column total_sqft
+		dataType: int64
+		formatString: #,0
+		lineageTag: b6c508df-9517-5ac8-8cca-5a528b29b7c5
+		summarizeBy: none
+		sourceColumn: total_sqft
+
+		annotation SummarizationSetBy = User
+
+	column grocery_sqft
+		dataType: int64
+		formatString: #,0
+		lineageTag: 866209a1-c7e3-5c29-8a9f-639f2940637c
+		summarizeBy: none
+		sourceColumn: grocery_sqft
+
+		annotation SummarizationSetBy = User
+
+	column non_grocery_sqft
+		dataType: int64
+		formatString: #,0
+		lineageTag: 518292b3-73dd-532b-98ba-d0a84503bd26
+		summarizeBy: none
+		sourceColumn: non_grocery_sqft
+
+		annotation SummarizationSetBy = User
+
+	column grocery_share_pct
+		dataType: double
+		formatString: 0.00
+		lineageTag: 39f0a57b-d105-59c1-afc5-29be76c32e26
+		summarizeBy: none
+		sourceColumn: grocery_share_pct
+
+		annotation SummarizationSetBy = User
+
+	column region_id
+		dataType: int64
+		formatString: 0
+		lineageTag: 020e715b-8f79-5a9b-8ed7-4fe555f78083
+		summarizeBy: none
+		sourceColumn: region_id
+
+		annotation SummarizationSetBy = User
+
+	column sales_district
+		dataType: string
+		lineageTag: 260f4e66-32ed-5448-84a0-de085ebc7d37
+		summarizeBy: none
+		sourceColumn: sales_district
+
+		annotation SummarizationSetBy = User
+
+	column sales_region
+		dataType: string
+		lineageTag: 64bd7147-4baf-54c4-801f-1d390490fcdb
+		summarizeBy: none
+		sourceColumn: sales_region
+
+		annotation SummarizationSetBy = User
+
+	column is_same_store_comparable
+		dataType: boolean
+		lineageTag: 826b93f1-2ed6-56b6-b64f-9fdd65b4f5b8
+		summarizeBy: none
+		sourceColumn: is_same_store_comparable
+
+		annotation SummarizationSetBy = User
+
+	partition DimStore = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents(DataFolder & "\dim_store.csv"), [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+				    PromotedHeaders = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
+				    ChangedTypes = Table.TransformColumnTypes(
+				        PromotedHeaders,
+				        {
+				        {"store_key", Int64.Type},
+				        {"store_id", Int64.Type},
+				        {"store_name", type text},
+				        {"store_type", type text},
+				        {"store_city", type text},
+				        {"store_state", type text},
+				        {"store_country", type text},
+				        {"first_opened_date", type date},
+				        {"last_remodel_date", type date},
+				        {"total_sqft", Int64.Type},
+				        {"grocery_sqft", Int64.Type},
+				        {"non_grocery_sqft", Int64.Type},
+				        {"grocery_share_pct", type number},
+				        {"region_id", Int64.Type},
+				        {"sales_district", type text},
+				        {"sales_region", type text},
+				        {"is_same_store_comparable", type logical}
+				        },
+				        "en-US"
+				    )
+				in
+				    ChangedTypes
+

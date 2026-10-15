@@ -1,0 +1,4 @@
+expression DataFolder = "E:\res\maven-market-retail-intelligence\data\model" meta [IsParameterQuery = true, Type = "Text", IsParameterQueryRequired = true]
+	lineageTag: 4136b535-4b50-5a3b-9425-275c6700ba4f
+
+	annotation PBI_ResultType = Text

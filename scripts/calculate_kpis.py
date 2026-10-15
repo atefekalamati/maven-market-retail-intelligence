@@ -252,7 +252,7 @@ def kpi_dictionary() -> pd.DataFrame:
             "dax_measure": "[Gross Margin %]",
             "dashboard_display": "Primary KPI card; percentage",
             "management_interpretation": "Separates growth in sales volume from improvement in unit economics.",
-            "limitation": "Stable gross margin does not imply stable net margin.",
+            "limitation": "Price and cost are fixed per product, so margin moves only with product mix. Gross margin is not net margin.",
         },
         {
             "group": "Executive",

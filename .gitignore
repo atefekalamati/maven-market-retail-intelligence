@@ -33,3 +33,7 @@ reports/generated/
 # Local environment files
 .env
 *.env
+
+# Power BI project local state (created by Power BI Desktop)
+**/.pbi/localSettings.json
+**/.pbi/cache.abf

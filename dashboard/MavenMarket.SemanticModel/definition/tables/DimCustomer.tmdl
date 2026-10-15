@@ -1,0 +1,271 @@
+table DimCustomer
+	lineageTag: c2346a88-ebaf-59a7-bce6-fb5cae2c7de9
+
+	column customer_key
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 12835c7d-aba9-533e-a2e9-19f5c831243e
+		summarizeBy: none
+		sourceColumn: customer_key
+
+		annotation SummarizationSetBy = User
+
+	column customer_id
+		dataType: int64
+		formatString: 0
+		lineageTag: cce199e5-ace4-5ac7-bd96-da0a5d5247bb
+		summarizeBy: none
+		sourceColumn: customer_id
+
+		annotation SummarizationSetBy = User
+
+	column customer_acct_num
+		dataType: string
+		lineageTag: 0027c3b2-e3bc-5dbb-aa75-c20aa0dc84e5
+		summarizeBy: none
+		sourceColumn: customer_acct_num
+
+		annotation SummarizationSetBy = User
+
+	column customer_full_name
+		dataType: string
+		lineageTag: 8d6f1a9d-a936-5926-b391-5ef0d58df615
+		summarizeBy: none
+		sourceColumn: customer_full_name
+
+		annotation SummarizationSetBy = User
+
+	column first_name
+		dataType: string
+		lineageTag: fc909c10-03ee-5b4e-a1de-8cbdeddb6a2e
+		summarizeBy: none
+		sourceColumn: first_name
+
+		annotation SummarizationSetBy = User
+
+	column last_name
+		dataType: string
+		lineageTag: e4a85abd-b231-5e4e-9e11-480e02f7c1f9
+		summarizeBy: none
+		sourceColumn: last_name
+
+		annotation SummarizationSetBy = User
+
+	column last_name_missing
+		dataType: boolean
+		lineageTag: 27242e82-8f52-518b-b474-0b981d8f1c9f
+		summarizeBy: none
+		sourceColumn: last_name_missing
+
+		annotation SummarizationSetBy = User
+
+	column customer_city
+		dataType: string
+		dataCategory: City
+		lineageTag: c19a6f4e-0206-5669-97d6-a8b071481c45
+		summarizeBy: none
+		sourceColumn: customer_city
+
+		annotation SummarizationSetBy = User
+
+	column customer_state_province
+		dataType: string
+		dataCategory: StateOrProvince
+		lineageTag: 296602ad-3930-531b-975b-dfa417c459d7
+		summarizeBy: none
+		sourceColumn: customer_state_province
+
+		annotation SummarizationSetBy = User
+
+	column customer_postal_code
+		dataType: string
+		dataCategory: PostalCode
+		lineageTag: d502b7d6-c891-5f99-86db-6d96b192879a
+		summarizeBy: none
+		sourceColumn: customer_postal_code
+
+		annotation SummarizationSetBy = User
+
+	column customer_country
+		dataType: string
+		dataCategory: Country
+		lineageTag: 8420baba-25d0-570c-9c53-857725c5d428
+		summarizeBy: none
+		sourceColumn: customer_country
+
+		annotation SummarizationSetBy = User
+
+	column birthdate
+		dataType: dateTime
+		formatString: yyyy-mm-dd
+		lineageTag: 8a2b657d-41bd-56e3-9e5f-7316a569d2a0
+		summarizeBy: none
+		sourceColumn: birthdate
+
+		annotation SummarizationSetBy = User
+
+	column birth_year
+		dataType: int64
+		formatString: 0
+		lineageTag: f72228d2-300e-532b-93c4-dd601474f51e
+		summarizeBy: none
+		sourceColumn: birth_year
+
+		annotation SummarizationSetBy = User
+
+	column marital_status
+		dataType: string
+		lineageTag: 0c69d7b4-5d2b-50e6-b953-05aec4fca8f5
+		summarizeBy: none
+		sourceColumn: marital_status
+
+		annotation SummarizationSetBy = User
+
+	column yearly_income
+		dataType: string
+		lineageTag: 0fc2ac44-09d9-5e56-94f0-43eb4360de8d
+		summarizeBy: none
+		sourceColumn: yearly_income
+		sortByColumn: income_band_sort
+
+		annotation SummarizationSetBy = User
+
+	column gender
+		dataType: string
+		lineageTag: a7497008-6969-5c2c-97c6-19117f7e38ae
+		summarizeBy: none
+		sourceColumn: gender
+
+		annotation SummarizationSetBy = User
+
+	column total_children
+		dataType: int64
+		formatString: #,0
+		lineageTag: 4bb6e41c-b9a4-5c14-8d3d-9693957708e2
+		summarizeBy: none
+		sourceColumn: total_children
+
+		annotation SummarizationSetBy = User
+
+	column num_children_at_home
+		dataType: int64
+		formatString: #,0
+		lineageTag: 4fc4b445-b89f-56e4-a606-96cdf454490f
+		summarizeBy: none
+		sourceColumn: num_children_at_home
+
+		annotation SummarizationSetBy = User
+
+	column education
+		dataType: string
+		lineageTag: 5f0548a1-1051-5799-be41-96fee3eae26f
+		summarizeBy: none
+		sourceColumn: education
+
+		annotation SummarizationSetBy = User
+
+	column acct_open_date
+		dataType: dateTime
+		formatString: yyyy-mm-dd
+		lineageTag: e9665330-745e-5673-9cd8-bce7409d6f99
+		summarizeBy: none
+		sourceColumn: acct_open_date
+
+		annotation SummarizationSetBy = User
+
+	column account_open_year
+		dataType: int64
+		formatString: 0
+		lineageTag: 3902459e-746d-50c9-933f-fbed31eb1a42
+		summarizeBy: none
+		sourceColumn: account_open_year
+
+		annotation SummarizationSetBy = User
+
+	column member_card
+		dataType: string
+		lineageTag: 541f8762-7247-560a-ba08-f89d2b4e9174
+		summarizeBy: none
+		sourceColumn: member_card
+		sortByColumn: member_card_sort
+
+		annotation SummarizationSetBy = User
+
+	column occupation
+		dataType: string
+		lineageTag: dedb546e-f640-5b9c-959b-675eeee97614
+		summarizeBy: none
+		sourceColumn: occupation
+
+		annotation SummarizationSetBy = User
+
+	column is_homeowner
+		dataType: boolean
+		lineageTag: 732fd8c4-0557-5ffd-b749-e3ad8bef058e
+		summarizeBy: none
+		sourceColumn: is_homeowner
+
+		annotation SummarizationSetBy = User
+
+	column member_card_sort
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 7fec54df-ad76-50aa-ac0d-61aee25eb09d
+		summarizeBy: none
+		sourceColumn: member_card_sort
+
+		annotation SummarizationSetBy = User
+
+	column income_band_sort
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: f9d4f6de-da4b-5fa3-8dd9-4c831e2ba767
+		summarizeBy: none
+		sourceColumn: income_band_sort
+
+		annotation SummarizationSetBy = User
+
+	partition DimCustomer = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents(DataFolder & "\dim_customer.csv"), [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+				    PromotedHeaders = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
+				    ChangedTypes = Table.TransformColumnTypes(
+				        PromotedHeaders,
+				        {
+				        {"customer_key", Int64.Type},
+				        {"customer_id", Int64.Type},
+				        {"customer_acct_num", type text},
+				        {"customer_full_name", type text},
+				        {"first_name", type text},
+				        {"last_name", type text},
+				        {"last_name_missing", type logical},
+				        {"customer_city", type text},
+				        {"customer_state_province", type text},
+				        {"customer_postal_code", type text},
+				        {"customer_country", type text},
+				        {"birthdate", type date},
+				        {"birth_year", Int64.Type},
+				        {"marital_status", type text},
+				        {"yearly_income", type text},
+				        {"gender", type text},
+				        {"total_children", Int64.Type},
+				        {"num_children_at_home", Int64.Type},
+				        {"education", type text},
+				        {"acct_open_date", type date},
+				        {"account_open_year", Int64.Type},
+				        {"member_card", type text},
+				        {"occupation", type text},
+				        {"is_homeowner", type logical}
+				        },
+				        "en-US"
+				    ),
+				    Added1 = Table.AddColumn(ChangedTypes, "member_card_sort", each if [member_card] = "Normal" then 1 else if [member_card] = "Bronze" then 2 else if [member_card] = "Silver" then 3 else if [member_card] = "Golden" then 4 else 5, Int64.Type),
+				    Added2 = Table.AddColumn(Added1, "income_band_sort", each Number.From(Text.BetweenDelimiters([yearly_income], "$", "K")), Int64.Type)
+				in
+				    Added2
+

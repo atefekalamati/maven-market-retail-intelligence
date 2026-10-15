@@ -1,0 +1,17 @@
+table CustomerPercentile
+	lineageTag: d0ad4c18-18ca-54fc-8a3c-3c1682a21c1c
+
+	column 'Customer Percentile'
+		dataType: int64
+		formatString: 0
+		lineageTag: 8169cef6-2db9-5269-8c05-3e4225b2f447
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Customer Percentile]
+
+		annotation SummarizationSetBy = User
+
+	partition CustomerPercentile = calculated
+		mode: import
+		source = SELECTCOLUMNS(GENERATESERIES(1, 100, 1), "Customer Percentile", [Value])
+

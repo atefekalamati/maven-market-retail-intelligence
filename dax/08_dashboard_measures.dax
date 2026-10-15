@@ -119,19 +119,79 @@ DISTINCTCOUNT(FactSales[product_key])
 Visible Customer Count =
 DISTINCTCOUNT(FactSales[customer_key])
 
+// Growth for the latest selected year. Without a year filter, the Stage 7
+// growth measures compare 1997-1998 with 1996-1997, which is not a valid
+// year-over-year comparison, so KPI cards use these measures instead.
+Latest Year Revenue Growth % =
+VAR LatestYear = MAX(DimDate[year])
+RETURN
+    CALCULATE([Revenue Growth %], DimDate[year] = LatestYear)
+
+Latest Year Same-Store Revenue Growth % =
+VAR LatestYear = MAX(DimDate[year])
+RETURN
+    CALCULATE([Same-Store Revenue Growth %], DimDate[year] = LatestYear)
+
 Reported Growth Label =
 IF(
-    ISBLANK([Revenue Growth %]),
+    ISBLANK([Latest Year Revenue Growth %]),
     "No prior-year comparison",
-    FORMAT([Revenue Growth %], "+0.0%;-0.0%;0.0%")
+    FORMAT([Latest Year Revenue Growth %], "+0.0%;-0.0%;0.0%")
 )
 
 Same-Store Growth Label =
 IF(
-    ISBLANK([Same-Store Revenue Growth %]),
+    ISBLANK([Latest Year Same-Store Revenue Growth %]),
     "No comparable-store baseline",
-    FORMAT([Same-Store Revenue Growth %], "+0.0%;-0.0%;0.0%")
+    FORMAT([Latest Year Same-Store Revenue Growth %], "+0.0%;-0.0%;0.0%")
 )
+
+Comparable Stores =
+CALCULATE(
+    [Active Stores],
+    KEEPFILTERS(DimStore[is_same_store_comparable] = TRUE())
+)
+
+Return Lines =
+COUNTROWS(FactReturns)
+
+Returned Products =
+DISTINCTCOUNT(FactReturns[product_key])
+
+// Product return rates are only shown for products with at least 300 units
+// sold, so small denominators do not dominate the ranking.
+Product Return Rate (300+ Units) % =
+IF(
+    [Quantity Sold] >= 300,
+    [Return Quantity Rate %]
+)
+
+// Customer concentration curve. CustomerPercentile is a disconnected
+// calculated table with the values 1-100, so the curve follows report filters.
+Cumulative Customer Revenue Share % =
+VAR Percentile = SELECTEDVALUE(CustomerPercentile[Customer Percentile])
+VAR CustomerRevenue =
+    ADDCOLUMNS(
+        VALUES(FactSales[customer_key]),
+        "@Revenue", CALCULATE([Total Revenue])
+    )
+VAR CustomerCount = COUNTROWS(CustomerRevenue)
+VAR TopCustomerCount = ROUNDUP(CustomerCount * Percentile / 100, 0)
+VAR TopRevenue =
+    SUMX(
+        TOPN(
+            TopCustomerCount,
+            CustomerRevenue,
+            [@Revenue], DESC,
+            FactSales[customer_key], ASC
+        ),
+        [@Revenue]
+    )
+RETURN
+    IF(
+        NOT ISBLANK(Percentile) && CustomerCount > 0,
+        DIVIDE(TopRevenue, SUMX(CustomerRevenue, [@Revenue]))
+    )
 
 Return Review Flag =
 VAR DifferencePP = [Return Rate vs Overall (pp)]
@@ -148,3 +208,5 @@ RETURN
 // 1. The return flag is relative to the current network average, not a business target.
 // 2. Store and product ranks respect the report's selected filters.
 // 3. Dynamic labels are display measures and should not be used as numerical KPIs.
+// 4. CustomerPercentile is a calculated table in the semantic model:
+//    CustomerPercentile = SELECTCOLUMNS(GENERATESERIES(1, 100, 1), "Customer Percentile", [Value])
