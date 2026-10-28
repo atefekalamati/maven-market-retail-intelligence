@@ -31,7 +31,7 @@ each query and from the project's validated reports. No analysis number was chan
 | Q6 Customer concentration | 8,842 active customers; top 10% (885) = 39.9% of revenue | 8,842; 885; 39.9% | Pass |
 | Q7 Return rate by store | Store 8 highest at 1.17%; Stores 2, 5, 14, 22 show 0 | Store 8 = 1.17% (480 / 40,994 units); Stores 2, 5, 14, 22 = 0.00% | Pass |
 | Q8 Revenue per customer by card | Golden 219.72 highest; Silver 178.35 lowest; Bronze 55.9% of revenue | Golden 219.72; Silver 178.35; Bronze 55.9% | Pass |
-| Q9 Data-quality checks | 0 problems on the four integrity checks; 18 duplicate-candidate rows (9 pairs) | 0 / 0 / 0 / 0; 18 rows in 9 groups | Pass (see note 2) |
+| Q9 Data-quality checks | 0 problems on the four integrity checks; 18 duplicate-candidate rows (9 pairs) | 0 / 0 / 0 / 0; 18 rows in 9 groups | Pass |
 | Q10 Reporting view and covering index | View totals equal the model; index keys (transaction_date_key, store_key) include (revenue, gross_product_profit, quantity_sold) | View: 444 rows, revenue 1,764,546.44, profit 1,052,818.78; index definition as expected | Pass (see note 3) |
 
 ## 03_practice_queries.sql
@@ -63,10 +63,9 @@ independent count or total.
 1. **Q5 scope.** The query ranks stores on 1998 revenue per square foot, where Store 19 (Canada, 3.69)
    is highest and Store 13 is first in the USA (3.00). The expected value 6.15 is Store 13 over the
    full 1997-1998 period, which a separate query confirmed. Both statements hold; they cover different periods.
-2. **Q9 duplicate count.** The query counts rows and returns 18. The inline comment in the file says
-   "expected 9", which is the number of pairs, not rows. `reports/cleaning_validation.json` records
-   18 duplicate-candidate rows representing 9 exact-looking pairs, and P11 returns the same 9 groups.
-   The data is correct; only the comment wording differs. The comment was left unchanged.
+2. **Q9 duplicate count.** The query counts rows and returns 18, as its comment states: 9 exact-looking
+   pairs with both rows flagged and kept. This matches `reports/cleaning_validation.json`, and P11
+   returns the same 9 groups.
 3. **Q10 index.** `CREATE INDEX` fails if the index already exists. To rerun Q10, drop the index first:
    `DROP INDEX IF EXISTS IX_FactSales_Date_Store_Covering ON analytics.FactSales;`.
    The view uses `CREATE OR ALTER` and can be rerun safely.

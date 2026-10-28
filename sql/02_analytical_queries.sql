@@ -296,7 +296,7 @@ WHERE ABS(revenue - quantity_sold * unit_retail_price) > 0.01
 UNION ALL
 SELECT 'Duplicate-candidate sales lines', COUNT(*)
 FROM analytics.FactSales
-WHERE duplicate_candidate = 1;   -- expected 9: flagged, kept, reviewed
+WHERE duplicate_candidate = 1;   -- expected 18: 9 exact-looking pairs, both rows flagged and kept
 
 
 /* ---------------------------------------------------------------------
