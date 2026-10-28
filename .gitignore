@@ -37,3 +37,6 @@ reports/generated/
 # Power BI project local state (created by Power BI Desktop)
 **/.pbi/localSettings.json
 **/.pbi/cache.abf
+
+# Personal interview notes
+sql/BI-Interview-Guide-PartSazan.pdf
