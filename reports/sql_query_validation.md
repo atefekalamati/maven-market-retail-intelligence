@@ -27,7 +27,7 @@ each query and from the project's validated reports. No analysis number was chan
 | Q2 Same-store growth | 13 stores, 565,238.13 -> 612,718.31, +8.4% | 13 stores, 565,238.13 -> 612,718.31, +8.40% | Pass |
 | Q3 Source of 1998 growth | Increase 634,070.18; comparable 47,480.18 (7.5%); new stores 586,590.00 (92.5%) | Comparable 13 stores 47,480.18 (7.5%); new 11 stores 586,590.00 (92.5%); total 634,070.18 | Pass |
 | Q4 Monthly trend | 24 rows; December 1998 strongest month (120,160.84) | 24 rows; 1998-12 = 120,160.84 is the maximum; running total ends at 1,764,546.44 | Pass |
-| Q5 Store productivity ranking | Store size barely relates to revenue; Store 13 highest revenue per sq ft over the full period (6.15) | Query (1998 only) ranks 24 stores within country. Full-period check: Store 13 = 6.15, highest. Size vs 1998 revenue: r = -0.10 | Pass (see note 1) |
+| Q5 Store productivity ranking | Store size barely relates to revenue; query ranks 1998 only; Store 13 = 6.15 per sq ft is the full-period figure | Query (1998 only) ranks 24 stores within country. Full-period check: Store 13 = 6.15, highest. Size vs 1998 revenue: r = -0.10 | Pass (see note 1) |
 | Q6 Customer concentration | 8,842 active customers; top 10% (885) = 39.9% of revenue | 8,842; 885; 39.9% | Pass |
 | Q7 Return rate by store | Store 8 highest at 1.17%; Stores 2, 5, 14, 22 show 0 | Store 8 = 1.17% (480 / 40,994 units); Stores 2, 5, 14, 22 = 0.00% | Pass |
 | Q8 Revenue per customer by card | Golden 219.72 highest; Silver 178.35 lowest; Bronze 55.9% of revenue | Golden 219.72; Silver 178.35; Bronze 55.9% | Pass |
@@ -63,6 +63,7 @@ independent count or total.
 1. **Q5 scope.** The query ranks stores on 1998 revenue per square foot, where Store 19 (Canada, 3.69)
    is highest and Store 13 is first in the USA (3.00). The expected value 6.15 is Store 13 over the
    full 1997-1998 period, which a separate query confirmed. Both statements hold; they cover different periods.
+   The Q5 comment in `02_analytical_queries.sql` now explains this difference.
 2. **Q9 duplicate count.** The query counts rows and returns 18, as its comment states: 9 exact-looking
    pairs with both rows flagged and kept. This matches `reports/cleaning_validation.json`, and P11
    returns the same 9 groups.

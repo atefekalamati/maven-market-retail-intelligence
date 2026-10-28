@@ -150,8 +150,9 @@ ORDER BY year_month_sort;
 /* ---------------------------------------------------------------------
    Q5. Store productivity ranking within each country (1998)
    Question: which stores use their floor space best?
-   Expected: store size barely relates to revenue; Store 13 has the
-             highest revenue per sq ft over the full period (6.15)
+   Expected: store size barely relates to revenue. Note: this query ranks
+             1998 only; the 6.15 per sq ft for Store 13 quoted in the
+             project is the full-period (1997+1998) figure
    --------------------------------------------------------------------- */
 /*  [فارسی]
     برای چیست: کدام فروشگاه از فضایش بهتر استفاده می‌کند؟
